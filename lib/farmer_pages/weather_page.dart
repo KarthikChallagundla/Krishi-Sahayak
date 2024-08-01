@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -24,11 +25,11 @@ class _WeatherPageState extends State<WeatherPage> {
   String currentCity = 'nuzvid';
 
   Future<Map<String, dynamic>> getCurrentWeather(city) async {
-
+    final apiKey = dotenv.env['API_KEY'];
     try {
       final res = await http.get(
         Uri.parse(
-          'https://api.openweathermap.org/data/2.5/forecast?units=metric&q=$city&appid=4ff0741b642cc93b1f8d48da1f24e8fa',
+          'https://api.openweathermap.org/data/2.5/forecast?units=metric&q=$city&appid=$apiKey',
         )
       );
       final data = jsonDecode(res.body);
