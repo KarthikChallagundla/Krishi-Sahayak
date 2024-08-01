@@ -44,7 +44,7 @@ class AboutPage extends StatelessWidget {
           
               Text('Support & feedback', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
               SizedBox(height: 10,),
-              Text('We value your feedback and are here to support you. If you have any questions, concerns, or suggestions, please reach out to us at [support email] or visit our support page [link to support page]. Your input helps us improve and serve you better.', textAlign: TextAlign.justify,),
+              Text('We value your feedback and are here to support you. If you have any questions, concerns, or suggestions, please reach out to us at karthikchallagundla18@gmail.com. Your input helps us improve and serve you better.', textAlign: TextAlign.justify,),
               SizedBox(height: 10,),
           
               Text('Future Plans', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
@@ -54,7 +54,7 @@ class AboutPage extends StatelessWidget {
           
               Text('Contact Us', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
               SizedBox(height: 10,),
-              Text('Have questions or need assistance? Contact us at [contact email] or follow us on [social media links]. We\'re here to help!', textAlign: TextAlign.justify,),
+              Text('Have questions or need assistance? Contact us at karthikchallagundla18@gmail.com. We\'re here to help!', textAlign: TextAlign.justify,),
               SizedBox(height: 40,),
             ],
           ),
