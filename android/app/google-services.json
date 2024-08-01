@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "641398181019",
+    "project_id": "krishi-sahayak-1afe3",
+    "storage_bucket": "krishi-sahayak-1afe3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:641398181019:android:f4e9d92f12fafecc744a3e",
+        "android_client_info": {
+          "package_name": "com.example.demo_mvp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbmw7wASJtK4SHu57PqAFcRe5zhyeOLDE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
