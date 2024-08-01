@@ -39,7 +39,6 @@ To get started with Krishi Sahayak, follow these steps:
 - **Login:** Existing users can log in using their credentials.
 - **Browse Products and Services:** Users can browse and search for the products and services they need.
 - **Place Orders:** Farmers can place orders for products or services, and providers can confirm these orders.
-- **Communication:** Use the chat interface to communicate with service providers.
 - **Weather Updates:** Check the latest weather updates relevant to your location.
 
 ## Contact
