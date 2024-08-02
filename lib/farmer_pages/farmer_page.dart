@@ -92,7 +92,7 @@ class _FarmerPageState extends State<FarmerPage> {
       ),
       body: pages[currentIndex],
       
-      floatingActionButton: (currentIndex != 0) ? Container() : FloatingActionButton(
+      floatingActionButton: (currentIndex == 0 || currentIndex == 3) ? FloatingActionButton(
         onPressed: (){
           showDialog(
             context: context,
@@ -180,7 +180,7 @@ class _FarmerPageState extends State<FarmerPage> {
           );
         },
         child: Icon(Icons.add),
-      ),
+      ) : Container(),
 
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
