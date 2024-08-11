@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:demo_mvp/farmer_pages/about.dart';
 import 'package:demo_mvp/farmer_pages/crop_doctor.dart';
 import 'package:demo_mvp/farmer_pages/machinery.dart';
+import 'package:demo_mvp/farmer_pages/market_prices.dart';
 import 'package:demo_mvp/farmer_pages/my_products.dart';
+import 'package:demo_mvp/farmer_pages/profile_page.dart';
+import 'package:demo_mvp/farmer_pages/schemes.dart';
 import 'package:demo_mvp/farmer_pages/soil_test.dart';
 import 'package:demo_mvp/farmer_pages/weather_page.dart';
 import 'package:demo_mvp/functions/database_functions.dart';
@@ -45,54 +47,69 @@ class _FarmerPageState extends State<FarmerPage> {
   @override
   Widget build(BuildContext context) {
 
-    final List<Widget> pages = [MyProcdutsPage(user: username), WeatherPage(), CropDoctor(), MachineryTools(), SoilTest()];
-    final List<String> names = ['My Products', 'Weather', 'Crop Doctor', 'Tools & Rental Services', 'Soil Testing'];
+    final List<Widget> pages = [MyProcdutsPage(user: username), WeatherPage(), MachineryTools(), SoilTest(), ProfilePage()];
+    final List<String> names = ['My Products', 'Weather', 'Tools & Rental Services', 'Soil Testing', 'Profile'];
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(0, 200, 0, 0.8),
         title: Text(names[currentIndex]),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: (){
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => AboutPage())
-              );
-            },
-            icon: Icon(Icons.info),
-          ),
-          IconButton(
-            onPressed: (){
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text('Do you want to exit?'),
-                    actions: [
-                      TextButton(
-                        onPressed: (){Navigator.of(context).pop();},
-                        child: Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          Navigator.of(context).pop();
-                          await FirebaseAuth.instance.signOut();
-                        },
-                        child: Text('Exit'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-            icon: Icon(Icons.logout),
-          ),
-        ],
       ),
-      body: pages[currentIndex],
+      body: (currentIndex != 0) ? pages[currentIndex] : Container(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ListTile(
+              tileColor: const Color.fromARGB(255, 241, 231, 231),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: TextButton(
+                onPressed: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyProcdutsPage(user: username)));
+                },
+                child: Text('Sell products', style: TextStyle(fontSize: 16),),
+              ),
+            ),
+            SizedBox(height: 10,),
+             ListTile(
+              tileColor: const Color.fromARGB(255, 241, 231, 231),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: TextButton(
+                onPressed: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => Schemes()));
+                },
+                child: Text('Government Schemes', style: TextStyle(fontSize: 16),),
+              ),
+            ),
+            SizedBox(height: 10,),
+            ListTile(
+              tileColor: const Color.fromARGB(255, 241, 231, 231),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: TextButton(
+                onPressed: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => MarketPrices()));
+                },
+                child: Text('Market Prices', style: TextStyle(fontSize: 16),),
+              ),
+            ),
+            SizedBox(height: 10,),
+            ListTile(
+              tileColor: const Color.fromARGB(255, 241, 231, 231),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: TextButton(
+                onPressed: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => CropDoctor()));
+                },
+                child: Text('Crop Doctor', style: TextStyle(fontSize: 16),),
+              ),
+            ),
+            SizedBox(height: 10,),
+          ],
+        ),
+      ),
       
-      floatingActionButton: (currentIndex == 0 || currentIndex == 3) ? FloatingActionButton(
+      floatingActionButton: (currentIndex == -1) ? FloatingActionButton(
         onPressed: (){
           showDialog(
             context: context,
@@ -193,16 +210,16 @@ class _FarmerPageState extends State<FarmerPage> {
             label: 'Forecast',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.medical_services, size: 25),
-            label: 'Doctor',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.agriculture, size: 30),
             label: 'Tools',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.science, size: 30),
             label: 'Soil Test',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person, size: 25),
+            label: 'Profile',
           ),
         ],
         currentIndex: currentIndex,

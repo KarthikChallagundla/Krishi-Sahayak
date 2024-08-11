@@ -12,6 +12,11 @@ class _CropDoctorState extends State<CropDoctor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(0, 200, 0, 0.8),
+        title: Text('Crop Doctor'),
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(

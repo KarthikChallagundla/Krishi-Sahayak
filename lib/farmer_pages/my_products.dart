@@ -19,6 +19,11 @@ class _MyProcdutsPageState extends State<MyProcdutsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(0, 200, 0, 0.8),
+        title: Text('Sell Products'),
+        centerTitle: true,
+      ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: StreamBuilder(
