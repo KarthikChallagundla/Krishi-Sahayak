@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_mvp/farmer_pages/farmer_page.dart';
+import 'package:demo_mvp/l10n/l10n.dart';
 import 'package:demo_mvp/login_page.dart';
 import 'package:demo_mvp/user_pages/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +25,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      supportedLocales: L10n.all,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      locale: const Locale('en'),
       home: Scaffold(
         body: Center(
           child: StreamBuilder(
