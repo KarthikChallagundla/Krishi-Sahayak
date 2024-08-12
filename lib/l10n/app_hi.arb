@@ -1,3 +1,27 @@
 {
-    "language": "Hindi"
+    "language": "हिन्दी",
+    "home": "घर",
+    "dashboard": "डैशबोर्ड",
+    "sellProducts": "उत्पाद बेचें",
+    "governmentSchemes": "सरकारी योजनाएँ",
+    "marketPrices": "बाज़ार कीमतें",
+    "cropDoctor": "फसल डॉक्टर",
+    "forecast": "पूर्वानुमान",
+    "weather": "मौसम",
+    "enterCity": "अपना शहर दर्ज करें",
+    "additionalInfo": "अतिरिक्त जानकारी",
+    "humidity": "आर्द्रता",
+    "windSpeed": "हवा की गति",
+    "pressure": "दबाव",
+    "tools": "उपकरण",
+    "soilTest": "मिट्टी परीक्षण",
+    "enterYourProblem": "अपनी समस्या दर्ज करें",
+    "wantSoilTest": "क्या आप मृदा परीक्षण चाहते हैं?",
+    "yesIWant": "हाँ, मैं चाहता हूँ",
+    "noDoubtClarification": "नहीं, संदेह स्पष्टीकरण",
+    "howManyAcres": "कितने एकड़?",
+    "profile": "प्रोफ़ाइल",
+    "changeLanguage": "भाषा बदलें",
+    "aboutUs": "हमारे बारे में",
+    "logout": "लॉगआउट"
 }

@@ -5,5 +5,6 @@ class L10n {
     const Locale('en'),
     const Locale('te'),
     const Locale('hi'),
+    const Locale('ur'),
   ];
 }

@@ -16,6 +16,9 @@ class _SchemesState extends State<Schemes> {
         title: Text('Government Schemes'),
         centerTitle: true,
       ),
+      body: Center(
+        child: Text('This page is under maintanance.'),
+      ),
     );
   }
 }

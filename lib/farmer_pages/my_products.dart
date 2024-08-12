@@ -165,6 +165,98 @@ class _MyProcdutsPageState extends State<MyProcdutsPage> {
           },
         ),
       ),
+      floatingActionButton: Container(
+        margin: EdgeInsets.only(bottom: 32, right: 8),
+        child: FloatingActionButton(
+          onPressed: (){
+            showDialog(
+              context: context,
+              builder: (context){
+                return AlertDialog(
+                  backgroundColor: Color.fromRGBO(232, 255, 245, 0.9),
+                  content: Form(
+                    key: _formkey,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextFormField(
+                            key: ValueKey('prodName'),
+                            decoration: InputDecoration(
+                              hintText: 'Product name',
+                              border: OutlineInputBorder(),
+                              fillColor: Color.fromRGBO(128, 128, 128, 0.3),
+                              filled: true,
+                            ),
+                            validator: (value) {
+                              if(value!.isEmpty){
+                                return "This field is empty";
+                              } else {
+                                return null;
+                              }
+                            },
+                            onSaved: (newValue) {
+                              setState(() {
+                                prodName = newValue!;
+                              });
+                            },
+                          ),
+                          SizedBox(height: 10,),
+                          TextFormField(
+                            keyboardType: TextInputType.number,
+                            key: ValueKey('prodPrice'),
+                            decoration: InputDecoration(
+                              hintText: 'Product price',
+                              border: OutlineInputBorder(),
+                              fillColor: Color.fromRGBO(128, 128, 128, 0.3),
+                              filled: true,
+                            ),
+                            validator: (value) {
+                              if(value!.isEmpty){
+                                return "This field is empty";
+                              } else {
+                                return null;
+                              }
+                            },
+                            onSaved: (newValue) {
+                              setState(() {
+                                prodPrice = newValue!;
+                              });
+                            },
+                          ),
+                          SizedBox(height: 10,),
+                          Container(
+                            child: ElevatedButton(
+                              onPressed: (){
+                                if(_formkey.currentState!.validate()){
+                                  _formkey.currentState!.save();
+                                  createProduct('products', prodName, prodName, prodPrice, widget.user);
+                                  setState(() {
+                                    _formkey = GlobalKey<FormState>();
+                                  });
+                                }
+                                Navigator.of(context).pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Successfully added'),
+                                  )
+                                );
+                              },
+                              child: const Text("Add my product"),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
+            );
+          },
+          child: Icon(Icons.add),
+        ),
+      ),
     );
   }
 }

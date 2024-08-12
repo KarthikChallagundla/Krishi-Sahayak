@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+
 
 class WeatherPage extends StatefulWidget {
   const WeatherPage({super.key});
@@ -87,7 +88,7 @@ class _WeatherPageState extends State<WeatherPage> {
                   controller: textEditingController,
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
-                    hintText: "Enter your city",
+                    hintText: AppLocalizations.of(context)!.enterCity,
                     hintStyle: TextStyle(
                       color: (Theme.of(context).brightness == Brightness.dark) ? Colors.white : Colors.black,
                     ),
@@ -155,8 +156,8 @@ class _WeatherPageState extends State<WeatherPage> {
                   )
                 ),
                 const SizedBox(height: 40),
-                const Text(
-                  "Weather Forecast",
+                Text(
+                  "${AppLocalizations.of(context)!.weather} ${AppLocalizations.of(context)!.forecast}",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold
@@ -181,8 +182,8 @@ class _WeatherPageState extends State<WeatherPage> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                const Text(
-                  "Additional Information",
+                Text(
+                  AppLocalizations.of(context)!.additionalInfo,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold
@@ -196,17 +197,17 @@ class _WeatherPageState extends State<WeatherPage> {
                     children: [
                       AdditionalInfoItem(
                         icon: Icons.water_drop,
-                        prop: "Humidity",
+                        prop: AppLocalizations.of(context)!.humidity,
                         value: '$humidity',
                       ),
                       AdditionalInfoItem(
                         icon: Icons.air,
-                        prop: "Wind Speed",
+                        prop: AppLocalizations.of(context)!.windSpeed,
                         value: '$wind',
                       ),
                       AdditionalInfoItem(
                         icon: Icons.beach_access,
-                        prop: "Pressure",
+                        prop: AppLocalizations.of(context)!.pressure,
                         value: '$pressure',
                       ),
                     ],

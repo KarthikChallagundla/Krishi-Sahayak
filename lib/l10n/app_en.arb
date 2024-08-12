@@ -1,6 +1,27 @@
 {
     "language": "English",
-    "@language": {
-        "description": "The current language"
-    }
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "sellProducts": "Sell Products",
+    "governmentSchemes": "Government Schemes",
+    "marketPrices": "Market Prices",
+    "cropDoctor": "Crop doctor",
+    "forecast": "Forecast",
+    "weather": "Weather",
+    "enterCity": "Enter your city",
+    "additionalInfo": "Additional Information",
+    "humidity": "Humidity",
+    "windSpeed": "Wind Speed",
+    "pressure": "Pressure",
+    "tools": "Tools",
+    "soilTest": "Soil Test",
+    "enterYourProblem": "Enter your problem",
+    "wantSoilTest": "Do you want soil test?",
+    "yesIWant": "Yes, I want",
+    "noDoubtClarification": "No, Doubt Clarification",
+    "howManyAcres": "How many acres?",
+    "profile": "Profile",
+    "changeLanguage": "Change Language",
+    "aboutUs": "About Us",
+    "logout": "Logout"
 }

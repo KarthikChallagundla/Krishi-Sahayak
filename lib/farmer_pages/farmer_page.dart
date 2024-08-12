@@ -7,9 +7,10 @@ import 'package:demo_mvp/farmer_pages/profile_page.dart';
 import 'package:demo_mvp/farmer_pages/schemes.dart';
 import 'package:demo_mvp/farmer_pages/soil_test.dart';
 import 'package:demo_mvp/farmer_pages/weather_page.dart';
-import 'package:demo_mvp/functions/database_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+
 
 class FarmerPage extends StatefulWidget {
   const FarmerPage({super.key});
@@ -20,10 +21,10 @@ class FarmerPage extends StatefulWidget {
 
 class _FarmerPageState extends State<FarmerPage> {
 
-  GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   String prodName = "";
   String prodPrice = "";
   String username = "";
+  String userRole = "";
 
   int currentIndex = 0;
 
@@ -40,6 +41,7 @@ class _FarmerPageState extends State<FarmerPage> {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
       setState(() {
         username = userDoc['username'];
+        userRole = userDoc['role'];
       });
     }
   }
@@ -47,16 +49,16 @@ class _FarmerPageState extends State<FarmerPage> {
   @override
   Widget build(BuildContext context) {
 
-    final List<Widget> pages = [MyProcdutsPage(user: username), WeatherPage(), MachineryTools(), SoilTest(), ProfilePage()];
-    final List<String> names = ['My Products', 'Weather', 'Tools & Rental Services', 'Soil Testing', 'Profile'];
+    final List<Widget> pages = [WeatherPage(), MachineryTools(), SoilTest(), ProfilePage(username: username, userRole: userRole,)];
+    final List<String> names = [AppLocalizations.of(context)!.weather, AppLocalizations.of(context)!.tools, AppLocalizations.of(context)!.soilTest, AppLocalizations.of(context)!.profile];
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(0, 200, 0, 0.8),
-        title: Text(names[currentIndex]),
+        title: (currentIndex == 0) ? Text(AppLocalizations.of(context)!.dashboard) : Text(names[currentIndex - 1]),
         centerTitle: true,
       ),
-      body: (currentIndex != 0) ? pages[currentIndex] : Container(
+      body: (currentIndex != 0) ? pages[currentIndex - 1] : Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -68,7 +70,7 @@ class _FarmerPageState extends State<FarmerPage> {
                 onPressed: (){
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyProcdutsPage(user: username)));
                 },
-                child: Text('Sell products', style: TextStyle(fontSize: 16),),
+                child: Text(AppLocalizations.of(context)!.sellProducts, style: TextStyle(fontSize: 16),),
               ),
             ),
             SizedBox(height: 10,),
@@ -79,7 +81,7 @@ class _FarmerPageState extends State<FarmerPage> {
                 onPressed: (){
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => Schemes()));
                 },
-                child: Text('Government Schemes', style: TextStyle(fontSize: 16),),
+                child: Text(AppLocalizations.of(context)!.governmentSchemes, style: TextStyle(fontSize: 16),),
               ),
             ),
             SizedBox(height: 10,),
@@ -90,7 +92,7 @@ class _FarmerPageState extends State<FarmerPage> {
                 onPressed: (){
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => MarketPrices()));
                 },
-                child: Text('Market Prices', style: TextStyle(fontSize: 16),),
+                child: Text(AppLocalizations.of(context)!.marketPrices, style: TextStyle(fontSize: 16),),
               ),
             ),
             SizedBox(height: 10,),
@@ -101,125 +103,35 @@ class _FarmerPageState extends State<FarmerPage> {
                 onPressed: (){
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => CropDoctor()));
                 },
-                child: Text('Crop Doctor', style: TextStyle(fontSize: 16),),
+                child: Text(AppLocalizations.of(context)!.cropDoctor, style: TextStyle(fontSize: 16),),
               ),
             ),
             SizedBox(height: 10,),
           ],
         ),
       ),
-      
-      floatingActionButton: (currentIndex == -1) ? FloatingActionButton(
-        onPressed: (){
-          showDialog(
-            context: context,
-            builder: (context){
-              return AlertDialog(
-                backgroundColor: Color.fromRGBO(232, 255, 245, 0.9),
-                content: Form(
-                  key: _formkey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextFormField(
-                          key: ValueKey('prodName'),
-                          decoration: InputDecoration(
-                            hintText: 'Product name',
-                            border: OutlineInputBorder(),
-                            fillColor: Color.fromRGBO(128, 128, 128, 0.3),
-                            filled: true,
-                          ),
-                          validator: (value) {
-                            if(value!.isEmpty){
-                              return "This field is empty";
-                            } else {
-                              return null;
-                            }
-                          },
-                          onSaved: (newValue) {
-                            setState(() {
-                              prodName = newValue!;
-                            });
-                          },
-                        ),
-                        SizedBox(height: 10,),
-                        TextFormField(
-                          keyboardType: TextInputType.number,
-                          key: ValueKey('prodPrice'),
-                          decoration: InputDecoration(
-                            hintText: 'Product price',
-                            border: OutlineInputBorder(),
-                            fillColor: Color.fromRGBO(128, 128, 128, 0.3),
-                            filled: true,
-                          ),
-                          validator: (value) {
-                            if(value!.isEmpty){
-                              return "This field is empty";
-                            } else {
-                              return null;
-                            }
-                          },
-                          onSaved: (newValue) {
-                            setState(() {
-                              prodPrice = newValue!;
-                            });
-                          },
-                        ),
-                        SizedBox(height: 10,),
-                        Container(
-                          child: ElevatedButton(
-                            onPressed: (){
-                              if(_formkey.currentState!.validate()){
-                                _formkey.currentState!.save();
-                                createProduct('products', prodName, prodName, prodPrice, username);
-                                setState(() {
-                                  _formkey = GlobalKey<FormState>();
-                                });
-                              }
-                              Navigator.of(context).pop();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Successfully added'),
-                                )
-                              );
-                            },
-                            child: const Text("Add my product"),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }
-          );
-        },
-        child: Icon(Icons.add),
-      ) : Container(),
 
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home, size: 30),
-            label: 'Home',
+            label: AppLocalizations.of(context)!.home,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.cloud, size: 25),
-            label: 'Forecast',
+            label: AppLocalizations.of(context)!.forecast,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.agriculture, size: 30),
-            label: 'Tools',
+            label: AppLocalizations.of(context)!.tools,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.science, size: 30),
-            label: 'Soil Test',
+            label: AppLocalizations.of(context)!.soilTest,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person, size: 25),
-            label: 'Profile',
+            label: AppLocalizations.of(context)!.profile,
           ),
         ],
         currentIndex: currentIndex,

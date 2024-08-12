@@ -1,9 +1,14 @@
 import 'package:demo_mvp/farmer_pages/about.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:demo_mvp/locale_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final String username;
+  final String userRole;
+  const ProfilePage({super.key, required this.username, required this.userRole});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -12,6 +17,9 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
+    final localeProvider = Provider.of<LocaleProvider>(context);
+    final selectedLocale = localeProvider.locale;
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -24,7 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             SizedBox(height: 16),
             Text(
-              'John Doe',
+              widget.username,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -32,7 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             SizedBox(height: 8),
             Text(
-              'Farmer & Agricultural Expert',
+              widget.userRole,
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey[600],
@@ -44,11 +52,48 @@ class _ProfilePageState extends State<ProfilePage> {
             Card(
               elevation: 4,
               child: ListTile(
+                leading: Icon(Icons.language, color: Colors.blue),
+                title: Text(AppLocalizations.of(context)!.changeLanguage),
+                trailing: DropdownButton<Locale>(
+                  value: selectedLocale,
+                  icon: Icon(Icons.arrow_downward),
+                  onChanged: (Locale? newLocale) {
+                    if (newLocale != null) {
+                      localeProvider.setLocale(newLocale);
+                    }
+                  },
+                  items: [
+                    DropdownMenuItem(
+                      value: Locale('en'),
+                      child: Text('English'),
+                    ),
+                    DropdownMenuItem(
+                      value: Locale('te'),
+                      child: Text('తెలుగు'),
+                    ),
+                    DropdownMenuItem(
+                      value: Locale('hi'),
+                      child: Text('हिंदी'),
+                    ),
+                    DropdownMenuItem(
+                      value: Locale('ur'),
+                      child: Text('اردو'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            Card(
+              elevation: 4,
+              child: ListTile(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => AboutPage()));
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => AboutPage()),
+                  );
                 },
                 leading: Icon(Icons.info, color: Colors.green),
-                title: Text('About Us'),
+                title: Text(AppLocalizations.of(context)!.aboutUs),
                 trailing: Icon(Icons.arrow_forward_ios),
               ),
             ),
@@ -77,7 +122,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             },
                             child: Text('Logout'),
                             style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white, backgroundColor: Colors.red, // Text color
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.red, // Text color
                             ),
                           ),
                         ],
@@ -86,7 +132,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   );
                 },
                 leading: Icon(Icons.logout, color: Colors.red),
-                title: Text('Log Out'),
+                title: Text(AppLocalizations.of(context)!.logout),
                 trailing: Icon(Icons.arrow_forward_ios),
               ),
             ),

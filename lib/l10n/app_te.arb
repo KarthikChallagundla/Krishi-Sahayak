@@ -1,3 +1,27 @@
 {
-    "language": "Telugu"
+    "language": "తెలుగు",
+    "home": "ఇల్లు",
+    "dashboard": "డ్యాష్‌బోర్డ్",
+    "sellProducts": "ఉత్పత్తులను అమ్మండి",
+    "governmentSchemes": "ప్రభుత్వ పథకాలు",
+    "marketPrices": "మార్కెట్ ధరలు",
+    "cropDoctor": "క్రాప్ డాక్టర్",
+    "forecast": "సూచన",
+    "weather": "వాతావరణం",
+    "enterCity": "మీ నగరాన్ని నమోదు చేయండి",
+    "additionalInfo": "అదనపు సమాచారం",
+    "humidity": "తేమ",
+    "windSpeed": "గాలి వేగం",
+    "pressure": "ఒత్తిడి",
+    "tools": "టూల్స్",
+    "soilTest": "మట్టి పరీక్ష",
+    "enterYourProblem": "మీ సమస్యను నమోదు చేయండి",
+    "wantSoilTest": "మీకు భూసార పరీక్ష కావాలా?",
+    "yesIWant": "అవును, నాకు కావాలి",
+    "noDoubtClarification": "లేదు, సందేహం స్పష్టీకరణ",
+    "howManyAcres": "ఎన్ని ఎకరాలు?",
+    "profile": "ప్రొఫైల్",
+    "changeLanguage": "భాషను మార్చు",
+    "aboutUs": "మా గురించి",
+    "logout": "లాగ్అవుట్"
 }

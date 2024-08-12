@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class SoilTest extends StatefulWidget {
   const SoilTest({super.key});
@@ -33,7 +34,7 @@ class _SoilTestState extends State<SoilTest> {
             Container(
               child: (isYes) ? Column(
                 children: [
-                  Text('Do you want soil test?', style: TextStyle(fontSize: 30),),
+                  Text(AppLocalizations.of(context)!.wantSoilTest, style: TextStyle(fontSize: 30),),
                   TextButton(
                     onPressed: (){
                       setState(() {
@@ -41,15 +42,15 @@ class _SoilTestState extends State<SoilTest> {
                       });
                     },
                     child: Text(
-                      'Yes, I want to',
+                      AppLocalizations.of(context)!.yesIWant,
                       style: TextStyle(fontSize: 18)
                     )
                   ),
-                  TextButton(onPressed: (){}, child: Text('No, Doubt clarification', style: TextStyle(fontSize: 18))),
+                  TextButton(onPressed: (){}, child: Text(AppLocalizations.of(context)!.noDoubtClarification, style: TextStyle(fontSize: 18))),
                 ],
               ) : Column(
                 children: [
-                  Text('How many acres?', style: TextStyle(fontSize: 30),),
+                  Text(AppLocalizations.of(context)!.howManyAcres, style: TextStyle(fontSize: 30),),
                   TextButton(onPressed: (){message(); setState(() {isYes = true;});}, child: Text('Less than 1 Acre', style: TextStyle(fontSize: 20),)),
                   TextButton(onPressed: (){message(); setState(() {isYes = true;});}, child: Text('1 - 5 Acre', style: TextStyle(fontSize: 20),)),
                   TextButton(onPressed: (){message(); setState(() {isYes = true;});}, child: Text('6 - 10 Acres', style: TextStyle(fontSize: 20),)),
@@ -72,7 +73,7 @@ class _SoilTestState extends State<SoilTest> {
                     child: TextField(
                       style: TextStyle(fontSize: 16),
                       textAlignVertical: TextAlignVertical.center,
-                      decoration: InputDecoration(hintText: 'Enter your problem', border: OutlineInputBorder(borderRadius: BorderRadius.circular(50))),
+                      decoration: InputDecoration(hintText: AppLocalizations.of(context)!.enterYourProblem, border: OutlineInputBorder(borderRadius: BorderRadius.circular(50))),
                     ),
                   ),
                 ),

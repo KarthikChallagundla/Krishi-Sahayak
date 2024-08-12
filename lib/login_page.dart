@@ -1,4 +1,5 @@
 import 'package:demo_mvp/functions/auth_functions.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,20 +22,41 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset('assets/login.jpg',fit: BoxFit.cover,),
+          Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.35,
+                color: Colors.orange[400],
+              ),
+              Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.3,
+                color: Colors.white,
+              ),
+              Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.35,
+                color: Colors.green[400],
+              ),
+            ],
+          ),
           Form(
             key: _formkey,
             child: Container(
-              
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  SizedBox(height: 30,),
+                  Image.asset('assets/krishi_sahayak.png', scale: 3),
+                  SizedBox(height: 20,),
                   Container(
-                    decoration: BoxDecoration(border: Border.all(width: 1), borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(border: Border.all(width: 1), borderRadius: BorderRadius.circular(10), color: Colors.white),
                     padding: EdgeInsets.all(10),
                     child: Column(
                       children: [
@@ -50,9 +72,9 @@ class _LoginPageState extends State<LoginPage> {
                                   });
                                 },
                                 style: TextButton.styleFrom(
-                                  backgroundColor: (!isLogin) ? Colors.white : null,
+                                  backgroundColor: (!isLogin) ? Colors.orange : null,
                                 ),
-                                child: Text('Sign Up'),
+                                child: Text('Sign Up', style: TextStyle(color: (!isLogin) ? Colors.white : null,),),
                               ),
                             ),
                             SizedBox(
@@ -64,14 +86,14 @@ class _LoginPageState extends State<LoginPage> {
                                   });
                                 },
                                 style: TextButton.styleFrom(
-                                  backgroundColor: (isLogin) ? Colors.white : null,
+                                  backgroundColor: (isLogin) ? Colors.orange : null,
                                 ),
-                                child: Text('Login'),
+                                child: Text('Login', style: TextStyle(color: (isLogin) ? Colors.white : null),),
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 10,),
+                        SizedBox(height: 20,),
                         (!isLogin) ? TextFormField(
                           key: ValueKey('username'),
                           decoration: InputDecoration(labelText: 'Enter Username', border: OutlineInputBorder()),
@@ -189,14 +211,29 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 10,),
-                        TextButton(
-                          onPressed: (){
-                            setState(() {
-                              isLogin = !isLogin;
-                            });
-                          },
-                          child: isLogin ? Text("Don't have an account? SignUp") : Text("Already Signed Up? Login")
+                        SizedBox(height: 20,),
+                        (isLogin) ? RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(text: "Don't have an account? ", style: TextStyle(color: Colors.black, fontSize: 16)),
+                              TextSpan(
+                                text: "SignUp",
+                                style: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold),
+                                recognizer: TapGestureRecognizer()..onTap = () {setState(() {isLogin = !isLogin;});}
+                              )
+                            ]
+                          ),
+                        ) : RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(text: "Already have an account? ", style: TextStyle(color: Colors.black, fontSize: 16)),
+                              TextSpan(
+                                text: "Login",
+                                style: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold),
+                                recognizer: TapGestureRecognizer()..onTap = () {setState(() {isLogin = !isLogin;});}
+                              )
+                            ]
+                          ),
                         ),
                       ],
                     ),

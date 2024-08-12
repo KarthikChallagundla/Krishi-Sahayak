@@ -16,6 +16,9 @@ class _MarketPricesState extends State<MarketPrices> {
         title: Text('Market Prices'),
         centerTitle: true,
       ),
+      body: Center(
+        child: Text('This page is under maintanance.'),
+      ),
     );
   }
 }
