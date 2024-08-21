@@ -16,20 +16,11 @@ class _CartPageState extends State<CartPage> {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text('Shopping Cart'),
-          centerTitle: true,
-        ),
         body: Center(child: Text('Please log in to see your cart.')),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromRGBO(0, 180, 0, 0.8),
-        title: Text('Shopping Cart'),
-        centerTitle: true,
-      ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: StreamBuilder<QuerySnapshot>(
@@ -43,33 +34,53 @@ class _CartPageState extends State<CartPage> {
               return Center(child: Text('Your cart is empty'));
             } else {
               var cartItems = snapshot.data!.docs;
-              return ListView.builder(
-                itemCount: cartItems.length,
-                itemBuilder: (context, index) {
-                  var cartItem = cartItems[index];
-                  var itemName = cartItem['itemName'] ?? 'Unnamed Item';
-                  var itemPrice = cartItem['itemPrice']?.toString() ?? '0';
-                  var quantity = cartItem['quantity'] ?? 0;
-        
-                  return Card(
-                    child: ListTile(
-                      title: Text(itemName),
-                      subtitle: Text('\$${itemPrice}'),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(quantity.toString()),
-                          IconButton(
-                            onPressed: () {
-                              deleteFromCart(cartItem.id);
-                            },
-                            icon: const Icon(Icons.delete),
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: cartItems.length,
+                      itemBuilder: (context, index) {
+                        var cartItem = cartItems[index];
+                        var itemName = cartItem['itemName'] ?? 'Unnamed Item';
+                        var itemPrice = cartItem['itemPrice']?.toString() ?? '0';
+                        var quantity = cartItem['quantity'] ?? 0;
+
+                        return Card(
+                          child: ListTile(
+                            title: Text(itemName),
+                            subtitle: Text('\$${itemPrice}'),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(quantity.toString()),
+                                IconButton(
+                                  onPressed: () {
+                                    deleteFromCart(cartItem.id);
+                                  },
+                                  icon: const Icon(Icons.delete),
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: TextButton(
+                      onPressed: () {
+                        
+                      },
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.lightGreen,
+                        padding: EdgeInsets.symmetric(horizontal: 30),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      ),
+                      child: Text('Proceed to Checkout', style: TextStyle(color: Colors.white),),
+                    ),
+                  ),
+                ],
               );
             }
           },

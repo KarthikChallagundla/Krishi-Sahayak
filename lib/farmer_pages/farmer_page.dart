@@ -3,7 +3,7 @@ import 'package:demo_mvp/farmer_pages/crop_doctor.dart';
 import 'package:demo_mvp/farmer_pages/machinery.dart';
 import 'package:demo_mvp/farmer_pages/market_prices.dart';
 import 'package:demo_mvp/farmer_pages/my_products.dart';
-import 'package:demo_mvp/farmer_pages/profile_page.dart';
+import 'package:demo_mvp/common_pages/profile_page.dart';
 import 'package:demo_mvp/farmer_pages/schemes.dart';
 import 'package:demo_mvp/farmer_pages/soil_test.dart';
 import 'package:demo_mvp/farmer_pages/weather_page.dart';

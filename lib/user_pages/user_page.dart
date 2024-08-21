@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demo_mvp/common_pages/profile_page.dart';
 import 'package:demo_mvp/functions/database_functions.dart';
 import 'package:demo_mvp/user_pages/cart_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class UserPage extends StatefulWidget {
   const UserPage({super.key});
@@ -12,49 +14,42 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+
+  String username = '';
+  String userRole = '';
+  int currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUsername();
+  }
+
+  Future<void> _getUsername() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      setState(() {
+        username = userDoc['username'];
+        userRole = userDoc['role'];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    final List<Widget> pages = [CartPage(), ProfilePage(username: username, userRole: userRole)];
+    final List<String> names = ['Cart', 'Profile'];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(0, 200, 0, 0.8),
-        title: Text('User Page'),
+        title: (currentIndex != 0) ? Text(names[currentIndex - 1]) : Text('User Page'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartPage()));
-            },
-            icon: Icon(Icons.shopping_bag),
-          ),
-          IconButton(
-            onPressed: (){
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text('Do you want to exit?'),
-                    actions: [
-                      TextButton(
-                        onPressed: (){Navigator.of(context).pop();},
-                        child: Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          Navigator.of(context).pop();
-                          await FirebaseAuth.instance.signOut();
-                        },
-                        child: Text('Exit'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-            icon: Icon(Icons.logout),
-          )
-        ],
       ),
-      body: Container(
+      body: (currentIndex != 0) ? pages[currentIndex - 1] : Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance.collection('products').snapshots(),
@@ -84,6 +79,31 @@ class _UserPageState extends State<UserPage> {
             }
           },
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home, size: 30),
+            label: AppLocalizations.of(context)!.home,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart, size: 25),
+            label: "Cart",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person, size: 25),
+            label: AppLocalizations.of(context)!.profile,
+          ),
+        ],
+        currentIndex: currentIndex,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey,
+        showUnselectedLabels: true,
+        onTap: (value) {
+          setState(() {
+            currentIndex = value;
+          });
+        },
       ),
     );
   }
