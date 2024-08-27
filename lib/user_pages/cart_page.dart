@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_mvp/functions/database_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -11,6 +12,26 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+
+  late Razorpay razorpay;
+  int amount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    razorpay = Razorpay();
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
+    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWallet);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    razorpay.clear();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
@@ -20,7 +41,18 @@ class _CartPageState extends State<CartPage> {
       );
     }
 
-    return Scaffold(
+    var options = {
+      'key': 'rzp_test_zAmhqVguMCl1RS',
+      'amount': amount*100,
+      'name': 'Karthik',
+      'description': 'Fine T-Shirt',
+      'theme':{"color": "#00FF00"},
+      'prefill': {
+        'contact': '8919393266',
+        'email': 'karthikchallagundla18@gmail.com'
+      },
+    };
+    return Scaffold(      
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: StreamBuilder<QuerySnapshot>(
@@ -70,7 +102,12 @@ class _CartPageState extends State<CartPage> {
                     padding: const EdgeInsets.all(16.0),
                     child: TextButton(
                       onPressed: () {
-                        
+                        int amt = 0;
+                        try {
+                          razorpay.open(options);
+                        } catch (e) {
+                          print('Error : $e');
+                        }
                       },
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.lightGreen,
@@ -86,6 +123,24 @@ class _CartPageState extends State<CartPage> {
           },
         ),
       ),
+    );
+  }
+
+  handlePaymentSuccess() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Payment Success')),
+    );
+  }
+
+  handlePaymentError() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Payment Error')),
+    );
+  }
+
+  handleExternalWallet() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Payment External Wallet')),
     );
   }
 }
