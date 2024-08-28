@@ -1,6 +1,4 @@
 import 'package:demo_mvp/functions/auth_functions.dart';
-import 'package:demo_mvp/signin_page.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,6 +14,9 @@ class _LoginPageState extends State<LoginPage> {
   bool showPassword = false;
   String email = '';
   String password = '';
+  String username = '';
+  String role = '';
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -24,25 +25,6 @@ class _LoginPageState extends State<LoginPage> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Column(
-            children: [
-              Container(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.35,
-                color: Colors.orange[400],
-              ),
-              Container(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.3,
-                color: Colors.white,
-              ),
-              Container(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.35,
-                color: Colors.green[400],
-              ),
-            ],
-          ),
           Form(
             key: _formkey,
             child: Container(
@@ -58,126 +40,246 @@ class _LoginPageState extends State<LoginPage> {
                     padding: EdgeInsets.all(10),
                     child: Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width/2 - 35,
-                              child: TextButton(
-                                onPressed: (){
-                                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SigninPage()));
-                                },
-                                child: Text('Sign Up'),
-                              ),
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width/2 - 35,
-                              child: TextButton(
-                                style: TextButton.styleFrom(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                  backgroundColor: Colors.orange,
-                                ),
-                                onPressed: (){},
-                                child: Text('Login', style: TextStyle(color: Colors.white),),
-                              ),
-                            ),
-                          ],
+                        DefaultTabController(
+                          length: 2,
+                          child: TabBar(
+                            onTap: (value) {
+                              setState(() {
+                                selectedIndex = value;
+                              });
+                            },
+                            tabs: [
+                              Tab(text: "Create Account",),
+                              Tab(text: "Log In",)
+                            ],
+                          ),
                         ),
                         SizedBox(height: 20,),
-                        TextFormField(
-                          key: ValueKey('email'),
-                          decoration: InputDecoration(labelText: 'Enter email', border: OutlineInputBorder()),
-                          validator: (value) {
-                            if(value.toString().contains('@') || value.toString().length > 10){
-                              return null;
-                            } else {
-                              return "Invalid Email/Phone number";
-                            }
-                          },
-                          onSaved: (newValue) {
-                            setState(() {
-                              email = newValue!;
-                            });
-                          },
-                        ),
-                        SizedBox(height: 10,),
-                        TextFormField(
-                          obscureText: !showPassword,
-                          key: ValueKey('password'),
-                          decoration: InputDecoration(
-                            labelText: 'Enter password',
-                            border: OutlineInputBorder(),
-                            suffixIcon: IconButton(
-                              onPressed: (){
+                        (selectedIndex == 1) ? Column(
+                          children: [
+                            TextFormField(
+                              key: ValueKey('email'),
+                              decoration: InputDecoration(labelText: 'Enter email', border: OutlineInputBorder()),
+                              validator: (value) {
+                                if(value.toString().contains('@') || value.toString().length > 10){
+                                  return null;
+                                } else {
+                                  return "Invalid Email/Phone number";
+                                }
+                              },
+                              onSaved: (newValue) {
                                 setState(() {
-                                  showPassword = !showPassword;
+                                  email = newValue!;
                                 });
                               },
-                              icon: showPassword ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
-                            )
-                          ),
-                          validator: (value) {
-                            if(value.toString().length < 6){
-                              return "Password is weak";
-                            } else {
-                              return null;
-                            }
-                          },
-                          onSaved: (newValue) {
-                            setState(() {
-                              password = newValue!;
-                            });
-                          },
+                            ),
+                            SizedBox(height: 10,),
+                            TextFormField(
+                              obscureText: !showPassword,
+                              key: ValueKey('password'),
+                              decoration: InputDecoration(
+                                labelText: 'Enter password',
+                                border: OutlineInputBorder(),
+                                suffixIcon: IconButton(
+                                  onPressed: (){
+                                    setState(() {
+                                      showPassword = !showPassword;
+                                    });
+                                  },
+                                  icon: showPassword ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
+                                )
+                              ),
+                              validator: (value) {
+                                if(value.toString().length < 6){
+                                  return "Password is weak";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              onSaved: (newValue) {
+                                setState(() {
+                                  password = newValue!;
+                                });
+                              },
+                            ),
+                            SizedBox(height: 10,),
+                            Container(
+                              width: 180,
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  if(_formkey.currentState!.validate()){
+                                    _formkey.currentState!.save();
+                                    String message;
+                                    message = await signIn(email, password);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 25),
+                                        showCloseIcon: true,
+                                        behavior: SnackBarBehavior.floating,
+                                        content: Text(message),
+                                      )
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  'Login',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 10,),
+                            Text('Or signin with'),
+                            SizedBox(height: 10,),
+                          ],
+                        ) : Column(
+                          children: [
+                            TextFormField(
+                              key: ValueKey('email'),
+                              decoration: InputDecoration(labelText: 'Enter email', border: OutlineInputBorder()),
+                              validator: (value) {
+                                if(value.toString().contains('@') || value.toString().length > 10){
+                                  return null;
+                                } else {
+                                  return "Invalid Email";
+                                }
+                              },
+                              onSaved: (newValue) {
+                                setState(() {
+                                  email = newValue!;
+                                });
+                              },
+                            ),
+                            SizedBox(height: 10,),
+                            TextFormField(
+                              obscureText: !showPassword,
+                              key: ValueKey('password'),
+                              decoration: InputDecoration(
+                                labelText: 'Enter password',
+                                border: OutlineInputBorder(),
+                                suffixIcon: IconButton(
+                                  onPressed: (){
+                                    setState(() {
+                                      showPassword = !showPassword;
+                                    });
+                                  },
+                                  icon: showPassword ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
+                                )
+                              ),
+                              validator: (value) {
+                                if(value.toString().length < 6){
+                                  return "Password is weak";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              onSaved: (newValue) {
+                                setState(() {
+                                  password = newValue!;
+                                });
+                              },
+                            ),
+                            SizedBox(height: 10,),
+                            Row(
+                              children: [
+                                Radio(
+                                  value: "Farmer",
+                                  groupValue: role,
+                                  onChanged: (value){
+                                    setState(() {
+                                      role = "Farmer";
+                                    });
+                                  },
+                                ),
+                                Text('Farmer', style: TextStyle(fontSize: 20),),
+                                Radio(
+                                  value: "User",
+                                  groupValue: role,
+                                  onChanged: (value){
+                                    setState(() {
+                                      role = "User";
+                                    });
+                                  },
+                                ),
+                                Text('User', style: TextStyle(fontSize: 20),),
+                              ],
+                            ),
+                            SizedBox(height: 10,),
+                            Container(
+                              width: 180,
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  if(_formkey.currentState!.validate()){
+                                    _formkey.currentState!.save();
+                                    String message;
+                                    message = await signUp(username, email, password, role);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 25),
+                                        showCloseIcon: true,
+                                        behavior: SnackBarBehavior.floating,
+                                        content: Text(message),
+                                      )
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  'Sign Up',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 10,),
+                            Text(
+                              'Or sign up with'
+                            ),
+                            SizedBox(height: 10,),
+                          ],
                         ),
                         SizedBox(height: 10,),
-                        Container(
-                          width: 180,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              if(_formkey.currentState!.validate()){
-                                _formkey.currentState!.save();
-                                String message;
-                                message = await signIn(email, password);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 25),
-                                    showCloseIcon: true,
-                                    behavior: SnackBarBehavior.floating,
-                                    content: Text(message),
-                                  )
-                                );
-                              }
-                            },
-                            child: Text(
-                              'Login',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20,),
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(text: "Don't have an account? ", style: TextStyle(color: Colors.black, fontSize: 16)),
-                              TextSpan(
-                                text: "SignUp",
-                                style: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold),
-                                recognizer: TapGestureRecognizer()..onTap = () {Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SigninPage()));}
-                              )
-                            ]
-                          ),
-                        ),
+                        signInButton('http://pngimg.com/uploads/google/google_PNG19635.png', 'Continue with Google', signInWithGoogle),
+                        SizedBox(height: 10,),
+                        signInButton('https://pngimg.com/uploads/facebook_logos/facebook_logos_PNG19753.png', 'Continue with Facebook', signInWithFacebook),
+                        // SizedBox(height: 10,),
+                        // signInButton('https://static.vecteezy.com/system/resources/previews/006/795/445/non_2x/smartphone-icon-cellphone-mobile-phone-sign-symbol-vector.jpg', 'Continue with Mobile')
                       ],
                     ),
                   ),
-                  SizedBox(height: 50,)
                 ],
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+  
+  signInButton(String imgUrl, String name, void Function()? fun) {
+    return SizedBox(
+      height: 50,
+      width: 250,
+      child: GestureDetector(
+        onTap: fun,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), border: Border.all(width: 1)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children:[
+              Container(
+                child: Image.network(                      
+                  imgUrl,
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
+              SizedBox(width: 5.0,),
+              Text(name),
+            ],
+          ),
+        ),
+      ), 
     );
   }
 }
