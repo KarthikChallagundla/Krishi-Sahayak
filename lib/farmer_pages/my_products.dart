@@ -1,16 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demo_mvp/farmer_pages/add_product.dart';
 import 'package:demo_mvp/functions/database_functions.dart';
 import 'package:flutter/material.dart';
 
-class MyProcdutsPage extends StatefulWidget {
+class MyProductsPage extends StatefulWidget {
   final String user;
-  const MyProcdutsPage({super.key, required this.user});
+  const MyProductsPage({super.key, required this.user});
 
   @override
-  State<MyProcdutsPage> createState() => _MyProcdutsPageState();
+  State<MyProductsPage> createState() => _MyProductsPageState();
 }
 
-class _MyProcdutsPageState extends State<MyProcdutsPage> {
+class _MyProductsPageState extends State<MyProductsPage> {
 
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   String prodName = '';
@@ -21,7 +22,7 @@ class _MyProcdutsPageState extends State<MyProcdutsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(0, 200, 0, 0.8),
-        title: Text('Sell Products'),
+        title: Text('My Products'),
         centerTitle: true,
       ),
       body: Container(
@@ -38,8 +39,8 @@ class _MyProcdutsPageState extends State<MyProcdutsPage> {
                 itemBuilder: (context, index) {
                   return (prodList[index]['owner'] != widget.user) ? Container() : Card(
                     child: ListTile(
-                      title: Text(prodList[index]['name']),
-                      subtitle: Text(prodList[index]['price']),
+                      title: Text("Name : ${prodList[index]['name']}"),
+                      subtitle: Text("Description : ${prodList[index]['description']}\nPrice : ${prodList[index]['price']}"),
                       trailing: PopupMenuButton(
                         itemBuilder: (context) {
                           return [
@@ -136,7 +137,7 @@ class _MyProcdutsPageState extends State<MyProcdutsPage> {
                                         ),
                                         TextButton(
                                           onPressed: () {
-                                            deleteProduct('products', prodList[index]['name']);
+                                            deleteProduct('products', prodList[index]['id']);
                                             Navigator.of(context).pop();
                                           },
                                           child: Text('Delete'),
@@ -169,90 +170,7 @@ class _MyProcdutsPageState extends State<MyProcdutsPage> {
         margin: EdgeInsets.only(bottom: 32, right: 8),
         child: FloatingActionButton(
           onPressed: (){
-            showDialog(
-              context: context,
-              builder: (context){
-                return AlertDialog(
-                  backgroundColor: Color.fromRGBO(232, 255, 245, 0.9),
-                  content: Form(
-                    key: _formkey,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextFormField(
-                            key: ValueKey('prodName'),
-                            decoration: InputDecoration(
-                              hintText: 'Product name',
-                              border: OutlineInputBorder(),
-                              fillColor: Color.fromRGBO(128, 128, 128, 0.3),
-                              filled: true,
-                            ),
-                            validator: (value) {
-                              if(value!.isEmpty){
-                                return "This field is empty";
-                              } else {
-                                return null;
-                              }
-                            },
-                            onSaved: (newValue) {
-                              setState(() {
-                                prodName = newValue!;
-                              });
-                            },
-                          ),
-                          SizedBox(height: 10,),
-                          TextFormField(
-                            keyboardType: TextInputType.number,
-                            key: ValueKey('prodPrice'),
-                            decoration: InputDecoration(
-                              hintText: 'Product price',
-                              border: OutlineInputBorder(),
-                              fillColor: Color.fromRGBO(128, 128, 128, 0.3),
-                              filled: true,
-                            ),
-                            validator: (value) {
-                              if(value!.isEmpty){
-                                return "This field is empty";
-                              } else {
-                                return null;
-                              }
-                            },
-                            onSaved: (newValue) {
-                              setState(() {
-                                prodPrice = newValue!;
-                              });
-                            },
-                          ),
-                          SizedBox(height: 10,),
-                          Container(
-                            child: ElevatedButton(
-                              onPressed: (){
-                                if(_formkey.currentState!.validate()){
-                                  _formkey.currentState!.save();
-                                  createProduct('products', prodName, prodName, prodPrice, widget.user);
-                                  setState(() {
-                                    _formkey = GlobalKey<FormState>();
-                                  });
-                                }
-                                Navigator.of(context).pop();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Successfully added'),
-                                  )
-                                );
-                              },
-                              child: const Text("Add my product"),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              }
-            );
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddProductsPage(user: widget.user,)));
           },
           child: Icon(Icons.add),
         ),

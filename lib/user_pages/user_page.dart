@@ -17,7 +17,11 @@ class _UserPageState extends State<UserPage> {
 
   String username = '';
   String userRole = '';
+  String userEmail = "";
   int currentIndex = 0;
+
+  // late DocumentSnapshot<Object?> userDocument;
+
 
   @override
   void initState() {
@@ -33,6 +37,8 @@ class _UserPageState extends State<UserPage> {
       setState(() {
         username = userDoc['username'];
         userRole = userDoc['role'];
+        userEmail = userDoc['email'];
+        // userDocument = userDoc;
       });
     }
   }
@@ -40,7 +46,7 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
 
-    final List<Widget> pages = [CartPage(), ProfilePage(username: username, userRole: userRole)];
+    final List<Widget> pages = [CartPage(), ProfilePage(username: username, email: userEmail,)];
     final List<String> names = ['Cart', 'Profile'];
 
     return Scaffold(

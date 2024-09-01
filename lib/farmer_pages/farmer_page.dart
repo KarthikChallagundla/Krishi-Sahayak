@@ -21,10 +21,14 @@ class FarmerPage extends StatefulWidget {
 
 class _FarmerPageState extends State<FarmerPage> {
 
+  String userId = "";
   String prodName = "";
   String prodPrice = "";
   String username = "";
   String userRole = "";
+  String userEmail = "";
+
+  // late DocumentSnapshot<Object?> userDocument;
 
   int currentIndex = 0;
 
@@ -40,8 +44,11 @@ class _FarmerPageState extends State<FarmerPage> {
     if (user != null) {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
       setState(() {
+        userId = userDoc['uid'];
         username = userDoc['username'];
         userRole = userDoc['role'];
+        userEmail = userDoc['email'];
+        // userDocument = userDoc;
       });
     }
   }
@@ -49,14 +56,13 @@ class _FarmerPageState extends State<FarmerPage> {
   @override
   Widget build(BuildContext context) {
 
-    final List<Widget> pages = [WeatherPage(), MachineryTools(), SoilTest(), ProfilePage(username: username, userRole: userRole,)];
+    final List<Widget> pages = [WeatherPage(), MachineryTools(), SoilTest(), ProfilePage(username: username, email: userEmail,)];
     final List<String> names = [AppLocalizations.of(context)!.weather, AppLocalizations.of(context)!.tools, AppLocalizations.of(context)!.soilTest, AppLocalizations.of(context)!.profile];
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(0, 200, 0, 0.8),
-        title: (currentIndex == 0) ? Text(AppLocalizations.of(context)!.dashboard) : Text(names[currentIndex - 1]),
-        centerTitle: true,
+        backgroundColor: Color.fromRGBO(72, 221, 30, 1),
+        title: Text(currentIndex == 0 ? AppLocalizations.of(context)!.dashboard : names[currentIndex - 1], style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),),
       ),
       body: (currentIndex != 0) ? pages[currentIndex - 1] : Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -68,7 +74,7 @@ class _FarmerPageState extends State<FarmerPage> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               title: TextButton(
                 onPressed: (){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyProcdutsPage(user: username)));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyProductsPage(user: userId)));
                 },
                 child: Text(AppLocalizations.of(context)!.sellProducts, style: TextStyle(fontSize: 16),),
               ),

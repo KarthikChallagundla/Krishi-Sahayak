@@ -3,11 +3,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 // CRUD operations on products
 
-createProduct(String collName, docName, name, price, username) async {
-  await FirebaseFirestore.instance.collection(collName).doc(docName).set({
-    'name':name,
-    'price':price,
-    'owner':username,
+createProduct(String collName, name, description, price, userId) async {
+  CollectionReference collectionRef = FirebaseFirestore.instance.collection('products');
+  DocumentReference docRef = collectionRef.doc();
+  String randomId = docRef.id;
+  await FirebaseFirestore.instance.collection(collName).doc(randomId).set({
+    'id': randomId,
+    'name': name,
+    'description': description,
+    'price': price,
+    'owner': userId,
   });
 }
 

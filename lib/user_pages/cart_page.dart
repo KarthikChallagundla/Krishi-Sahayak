@@ -14,7 +14,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
 
   late Razorpay razorpay;
-  int amount = 0;
+  num amount = 0;
 
   @override
   void initState() {
@@ -41,17 +41,6 @@ class _CartPageState extends State<CartPage> {
       );
     }
 
-    var options = {
-      'key': 'rzp_test_zAmhqVguMCl1RS',
-      'amount': amount*100,
-      'name': 'Karthik',
-      'description': 'Fine T-Shirt',
-      'theme':{"color": "#00FF00"},
-      'prefill': {
-        'contact': '8919393266',
-        'email': 'karthikchallagundla18@gmail.com'
-      },
-    };
     return Scaffold(      
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -76,6 +65,7 @@ class _CartPageState extends State<CartPage> {
                         var itemName = cartItem['itemName'] ?? 'Unnamed Item';
                         var itemPrice = cartItem['itemPrice']?.toString() ?? '0';
                         var quantity = cartItem['quantity'] ?? 0;
+                        amount += int.parse(cartItem['itemPrice']) * cartItem['quantity'];
 
                         return Card(
                           child: ListTile(
@@ -102,9 +92,18 @@ class _CartPageState extends State<CartPage> {
                     padding: const EdgeInsets.all(16.0),
                     child: TextButton(
                       onPressed: () {
-                        int amt = 0;
                         try {
-                          razorpay.open(options);
+                          razorpay.open({
+                            'key': 'rzp_test_zAmhqVguMCl1RS',
+                            'amount': amount*100,
+                            'name': 'Karthik',
+                            'description': 'Fine T-Shirt',
+                            'theme':{"color": "#00FF00"},
+                            'prefill': {
+                              'contact': '8919393266',
+                              'email': 'karthikchallagundla18@gmail.com'
+                            },
+                          });
                         } catch (e) {
                           print('Error : $e');
                         }

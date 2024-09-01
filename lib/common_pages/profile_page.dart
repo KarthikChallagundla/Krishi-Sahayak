@@ -6,9 +6,10 @@ import 'package:demo_mvp/locale_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class ProfilePage extends StatefulWidget {
+  // final DocumentSnapshot<Object?> userDocument;
   final String username;
-  final String userRole;
-  const ProfilePage({super.key, required this.username, required this.userRole});
+  final String email;
+  const ProfilePage({super.key, required this.username, required this.email});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -18,135 +19,243 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final localeProvider = Provider.of<LocaleProvider>(context);
-    final selectedLocale = localeProvider.locale;
+
+    TextStyle mainStyle = TextStyle(
+      fontSize: 18,
+    );
+    TextStyle buttonStyle = TextStyle(
+      fontSize: 16,
+      color: Colors.blue
+    );
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: Container(
+        color: Colors.grey[600],
+        padding: EdgeInsets.only(top: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
-              radius: 60,
+              backgroundColor: Colors.white,
+              radius: 55,
               child: Image.asset('assets/krishi_sahayak.png'),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 12),
             Text(
               widget.username,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
-            SizedBox(height: 8),
+            SizedBox(height: 2),
             Text(
-              widget.userRole,
+              widget.email,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[600],
+                color: Colors.white,
               ),
             ),
             SizedBox(height: 20),
-            Divider(height: 30, thickness: 2, color: Colors.green[300]),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                additionalButtons(Icons.work_outline, "Passenger\nDocuments"),
+                additionalButtons(Icons.notifications_outlined, "Tracker\nNotifications"),
+                additionalButtons(Icons.help_outline_outlined, "Help Center"),
+              ],
+            ),
             SizedBox(height: 10),
-            Card(
-              elevation: 4,
-              child: ListTile(
-                leading: Icon(Icons.language, color: Colors.blue),
-                title: Text(AppLocalizations.of(context)!.changeLanguage),
-                trailing: DropdownButton<Locale>(
-                  value: selectedLocale,
-                  icon: Icon(Icons.arrow_downward),
-                  onChanged: (Locale? newLocale) {
-                    if (newLocale != null) {
-                      localeProvider.setLocale(newLocale);
-                    }
-                  },
-                  items: [
-                    DropdownMenuItem(
-                      value: Locale('en'),
-                      child: Text('English'),
-                    ),
-                    DropdownMenuItem(
-                      value: Locale('te'),
-                      child: Text('తెలుగు'),
-                    ),
-                    DropdownMenuItem(
-                      value: Locale('hi'),
-                      child: Text('हिंदी'),
-                    ),
-                    DropdownMenuItem(
-                      value: Locale('ur'),
-                      child: Text('اردو'),
-                    ),
-                    DropdownMenuItem(
-                      value: Locale('ta'),
-                      child: Text('தமிழ்'),
-                    ),
-                    DropdownMenuItem(
-                      value: Locale('ml'),
-                      child: Text('മലയാളം'),
-                    ),
-                  ],
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(top: 20, left: 8, right: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
                 ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Card(
-              elevation: 4,
-              child: ListTile(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => AboutPage()),
-                  );
-                },
-                leading: Icon(Icons.info, color: Colors.green),
-                title: Text(AppLocalizations.of(context)!.aboutUs),
-                trailing: Icon(Icons.arrow_forward_ios),
-              ),
-            ),
-            SizedBox(height: 10),
-            Card(
-              elevation: 4,
-              child: ListTile(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('Logout'),
-                        content: Text('Are you sure you want to log out?'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('Cancel'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              FirebaseAuth.instance.signOut();
-                            },
-                            child: Text('Logout'),
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.red, // Text color
+                child: SingleChildScrollView(
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.only(left: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Text(
+                            'Settings',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold
                             ),
                           ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                leading: Icon(Icons.logout, color: Colors.red),
-                title: Text(AppLocalizations.of(context)!.logout),
-                trailing: Icon(Icons.arrow_forward_ios),
+                        ),
+                        SizedBox(height: 10,),
+                        Container(
+                          decoration: BoxDecoration(),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Icon(Icons.phone, size: 28,),
+                              SizedBox(width: 16,),
+                              Expanded(child: Text('Phone Number', style: mainStyle,)),
+                              Text('Add Number', style: buttonStyle,)
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 15,),
+                        Row(
+                          children: [
+                            Icon(Icons.language_rounded, size: 28,),
+                            SizedBox(width: 16,),
+                            Expanded(child: Text('Language', style: mainStyle,)),
+                            PopupMenuButton(
+                              child: Text(AppLocalizations.of(context)!.language, style: buttonStyle,),
+                              itemBuilder: (context) {
+                                return [
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      localeProvider.setLocale(Locale('en'));
+                                    },
+                                    child: Text('English'),
+                                  ),
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      localeProvider.setLocale(Locale('te'));
+                                    },
+                                    child: Text('తెలుగు'),
+                                  ),
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      localeProvider.setLocale(Locale('hi'));
+                                    },
+                                    child: Text('हिन्दी'),
+                                  ),
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      localeProvider.setLocale(Locale('ur'));
+                                    },
+                                    child: Text('انگریزی'),
+                                  ),
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      localeProvider.setLocale(Locale('ta'));
+                                    },
+                                    child: Text('தமிழ்'),
+                                  ),
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      localeProvider.setLocale(Locale('ml'));
+                                    },
+                                    child: Text('മലയാളം'),
+                                  ),
+                                ];
+                              },
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 15,),
+                        Row(
+                          children: [
+                            Icon(Icons.money_rounded, size: 28,),
+                            SizedBox(width: 16,),
+                            Expanded(child: Text('My Orders', style: mainStyle,)),
+                          ],
+                        ),
+                        SizedBox(height: 18,),
+                        Row(
+                          children: [
+                            Icon(Icons.edit, size: 28,),
+                            SizedBox(width: 16,),
+                            Expanded(child: Text('Profile Settings', style: mainStyle,)),
+                          ],
+                        ),
+                        SizedBox(height: 15,),
+                        Row(
+                          children: [
+                            Icon(Icons.notifications_active, size: 28,),
+                            SizedBox(width: 16,),
+                            Expanded(child: Text('Notification Settings', style: mainStyle,)),
+                          ],
+                        ),
+                        SizedBox(height: 15,),
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AboutPage()));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.info_outline, size: 28,),
+                              SizedBox(width: 16,),
+                              Expanded(child: Text('About Us', style: mainStyle,)),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 15,),
+                        GestureDetector(
+                          onTap: (){
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('Are you sure to logout?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('No', style: TextStyle(color: Colors.green),),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        FirebaseAuth.instance.signOut();
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Yes', style: TextStyle(color: Colors.red),),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.logout, size: 28,),
+                              SizedBox(width: 16,),
+                              Expanded(child: Text('Logout', style: mainStyle,)),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 15,),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+  
+  additionalButtons(IconData icon, String name) {
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 25,
+          backgroundColor: Colors.white,
+          child: IconButton(
+            onPressed: (){},
+            icon: Icon(icon),
+          ),
+        ),
+        SizedBox(height: 10,),
+        Text(name, textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
+      ],
     );
   }
 }

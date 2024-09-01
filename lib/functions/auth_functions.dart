@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 
-Future<String> signUp(String username, String email, String password, String role) async {
+Future<String> signUp(String username, String email, String password, String role, {phone='', address='', imageUrl=''}) async {
   if (role == ''){
     return 'Add your role';
   }
@@ -15,9 +14,13 @@ Future<String> signUp(String username, String email, String password, String rol
     );
 
     await FirebaseFirestore.instance.collection('users').doc(credential.user!.uid).set({
+      'uid': credential.user!.uid,
       'username': username,
       'email': email,
       'role': role,
+      'phone': phone,
+      'address': address,
+      'imageUrl': imageUrl,
     });
 
     return "Successfully Signed Up";
@@ -36,7 +39,7 @@ Future<String> signUp(String username, String email, String password, String rol
 
 Future<String> signIn(String email, String password) async {
   try {
-    final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
@@ -54,23 +57,51 @@ Future<String> signIn(String email, String password) async {
   }
 }
 
-Future<UserCredential> signInWithGoogle() async {
-  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+Future<String> signInWithGoogle(String role) async {
+  final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+  await googleSignIn.signOut();
 
-  final credential = GoogleAuthProvider.credential(
-    accessToken: googleAuth?.accessToken,
-    idToken: googleAuth?.idToken,
-  );
+  try {
+    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
-  return await FirebaseAuth.instance.signInWithCredential(credential);
-}
+    if (googleUser == null) {
+      return 'Sign-in was aborted by the user';
+    }
 
-Future<UserCredential> signInWithFacebook() async {
-  final LoginResult loginResult = await FacebookAuth.instance.login();
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-  final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+    final OAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
 
-  return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+
+    User? user = userCredential.user;
+
+    if (user != null) {
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+
+      if (!userDoc.exists) {
+        print(user);
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'uid': user.uid,
+          'username': user.displayName,
+          'email': user.email,
+          'role': role,
+          'imageUrl': user.photoURL,
+          'phone': '',
+          'address': '',
+        });
+      } else {
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+          'lastSignInTime': user.metadata.lastSignInTime,
+        });
+      }
+    }
+    return "Successfully Completed";
+  } on FirebaseAuthException catch (e) {
+    return e.message ?? "An unknown error occurred";
+  }
 }

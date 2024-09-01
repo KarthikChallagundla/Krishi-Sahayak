@@ -42,20 +42,10 @@ class AboutPage extends StatelessWidget {
               Text('We prioritize your security with data encryption at rest and in transit. Our app includes phone number validation to ensure the authenticity of our users. Your data privacy and protection are our top concerns.', textAlign: TextAlign.justify,),
               SizedBox(height: 10,),
           
-              Text('Support & feedback', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
-              SizedBox(height: 10,),
-              Text('We value your feedback and are here to support you. If you have any questions, concerns, or suggestions, please reach out to us at karthikchallagundla18@gmail.com. Your input helps us improve and serve you better.', textAlign: TextAlign.justify,),
-              SizedBox(height: 10,),
-          
               Text('Future Plans', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
               SizedBox(height: 10,),
               Text('Stay tuned for exciting updates and new features as we continue to enhance our platform to better serve the agricultural community.', textAlign: TextAlign.justify,),
               SizedBox(height: 10,),
-          
-              Text('Contact Us', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
-              SizedBox(height: 10,),
-              Text('Have questions or need assistance? Contact us at karthikchallagundla18@gmail.com. We\'re here to help!', textAlign: TextAlign.justify,),
-              SizedBox(height: 40,),
             ],
           ),
         ),
