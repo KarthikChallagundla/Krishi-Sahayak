@@ -1,9 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+// CRUD operations on users
+
+updateUser(String collName, docName, field, var newFieldValue) async {
+  await FirebaseFirestore.instance.collection(collName).doc(docName).update({field:newFieldValue});
+}
+
 // CRUD operations on products
 
-createProduct(String collName, name, description, price, userId) async {
+createProduct(String collName, name, description, price, quantity, userId) async {
   CollectionReference collectionRef = FirebaseFirestore.instance.collection('products');
   DocumentReference docRef = collectionRef.doc();
   String randomId = docRef.id;
@@ -12,6 +18,7 @@ createProduct(String collName, name, description, price, userId) async {
     'name': name,
     'description': description,
     'price': price,
+    'quantity': quantity,
     'owner': userId,
   });
 }
@@ -28,18 +35,43 @@ deleteProduct(String collName, docName) async {
 
 addToCart(Map<String, dynamic> item) async {
   User? user = FirebaseAuth.instance.currentUser;
-  DocumentReference cartRef = FirebaseFirestore.instance.collection('users').doc(user!.uid).collection('cart').doc(item['id']);
+  DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+  if (userDoc['cartId'].toString().isEmpty){
+    DocumentReference newDoc = FirebaseFirestore.instance.collection('cart').doc();
+    String randomId = newDoc.id;
+    FirebaseFirestore.instance.collection('cart').doc(randomId).set({
+      'id': randomId,
+      'items': [],
+    });
+    updateUser('users', user.uid, 'cartId', randomId);
+  }
+  userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+  DocumentReference cartRef = FirebaseFirestore.instance.collection('cart').doc(userDoc['cartId'].toString());
   DocumentSnapshot doc = await cartRef.get();
-  if (doc.exists) {
-    cartRef.update({
-      'quantity': FieldValue.increment(1),
-    });
+  if(doc.exists){
+    List<dynamic> itemList = doc['items'];
+    bool itemFound = false;
+    for (var i = 0; i < itemList.length; i++) {
+      if (itemList[i]['productId'] == item['id']) {
+        itemList[i]['quantity'] += 1;
+        itemFound = true;
+        break;
+      }
+    }
+
+    if(!itemFound){
+      itemList.add({
+        'productId': item['id'],
+        'name': item['name'],
+        'price': item['price'],
+        'quantity': 1,
+        'owner': item['owner'],
+      });
+    }
+
+    await cartRef.update({'items': itemList});
   } else {
-    cartRef.set({
-      'itemName': item['name'],
-      'itemPrice': item['price'],
-      'quantity': 1,
-    });
+    print('Cart doesnot exist');
   }
 }
 

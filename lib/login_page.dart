@@ -1,5 +1,5 @@
-import 'package:demo_mvp/details_page.dart';
 import 'package:demo_mvp/functions/auth_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -112,6 +112,45 @@ class _LoginPageState extends State<LoginPage> {
                                     password = newValue!;
                                   });
                                 },
+                              ),
+                              SizedBox(height: 10,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  TextButton(
+                                    onPressed: (){
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          TextEditingController emailController = TextEditingController();
+                                          return AlertDialog(
+                                            title: Text('Enter your email'),
+                                            content: TextField(
+                                              controller: emailController,
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: (){
+                                                  FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
+                                                  Navigator.of(context).pop();
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text("Reset link sent"),
+                                                      behavior: SnackBarBehavior.floating,
+                                                      showCloseIcon: true,
+                                                    )
+                                                  );
+                                                },
+                                                child: Text('Send reset link'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Text('Forgot Password?'),
+                                  ),
+                                ],
                               ),
                               SizedBox(height: 10,),
                               Container(
@@ -234,7 +273,7 @@ class _LoginPageState extends State<LoginPage> {
                                     }
                                     else if(_formkey.currentState!.validate()){
                                       _formkey.currentState!.save();
-                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailsPage(email: email, password: password, role: role,)));
+                                      signUp('Guest', email, password, role);
                                     }
                                   },
                                   child: Text(
@@ -255,10 +294,13 @@ class _LoginPageState extends State<LoginPage> {
                             onTap: (){
                               showRoleSelectionDialog(context);
                             },
-                            child: signInButton('http://pngimg.com/uploads/google/google_PNG19635.png', 'Continue with Google'),
+                            child: signInButton('assets/google.png', 'Continue with Google'),
                           ),
-                          // SizedBox(height: 10,),
-                          // signInButton('https://static.vecteezy.com/system/resources/previews/006/795/445/non_2x/smartphone-icon-cellphone-mobile-phone-sign-symbol-vector.jpg', 'Continue with Mobile')
+                          SizedBox(height: 10,),
+                          GestureDetector(
+                            onTap: (){},
+                            child: signInButton('assets/mobile.jpg', 'Continue with Mobile'),
+                          )
                         ],
                       ),
                     ),
@@ -283,13 +325,10 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Container(
-            //   child: Image.network(                      
-            //     imgUrl,
-            //     fit: BoxFit.fitWidth,
-            //   ),
-            // ),
-            // SizedBox(width: 5.0,),
+            Container(
+              child: Image.asset(imgUrl),
+            ),
+            SizedBox(width: 5.0,),
             Text(name),
           ],
         ),

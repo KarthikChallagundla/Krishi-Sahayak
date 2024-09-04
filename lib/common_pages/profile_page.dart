@@ -1,6 +1,8 @@
 import 'package:demo_mvp/common_pages/about.dart';
+import 'package:demo_mvp/common_pages/profile_settings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:demo_mvp/locale_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -94,19 +96,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                         SizedBox(height: 10,),
-                        Container(
-                          decoration: BoxDecoration(),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Icon(Icons.phone, size: 28,),
-                              SizedBox(width: 16,),
-                              Expanded(child: Text('Phone Number', style: mainStyle,)),
-                              Text('Add Number', style: buttonStyle,)
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 15,),
                         Row(
                           children: [
                             Icon(Icons.language_rounded, size: 28,),
@@ -166,12 +155,17 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                         SizedBox(height: 18,),
-                        Row(
-                          children: [
-                            Icon(Icons.edit, size: 28,),
-                            SizedBox(width: 16,),
-                            Expanded(child: Text('Profile Settings', style: mainStyle,)),
-                          ],
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ProfileSettings()));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit, size: 28,),
+                              SizedBox(width: 16,),
+                              Expanded(child: Text('Edit Profile', style: mainStyle,)),
+                            ],
+                          ),
                         ),
                         SizedBox(height: 15,),
                         Row(

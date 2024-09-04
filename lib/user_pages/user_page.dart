@@ -20,7 +20,7 @@ class _UserPageState extends State<UserPage> {
   String userEmail = "";
   int currentIndex = 0;
 
-  // late DocumentSnapshot<Object?> userDocument;
+  DocumentSnapshot<Object?>? userDocument;
 
 
   @override
@@ -38,7 +38,7 @@ class _UserPageState extends State<UserPage> {
         username = userDoc['username'];
         userRole = userDoc['role'];
         userEmail = userDoc['email'];
-        // userDocument = userDoc;
+        userDocument = userDoc;
       });
     }
   }
@@ -70,11 +70,11 @@ class _UserPageState extends State<UserPage> {
                   var product = prodList[index];
                   return Card(
                     child: ListTile(
-                      title: Text(product['name']),
-                      subtitle: Text(product['price']),
+                      title: Text("${product['name']} ${(int.parse(product['quantity']) == 0) ? "Out of stock" : ""}"),
+                      subtitle: Text("${product['description']}\nPrice : ${product['price']}"),
                       trailing: IconButton(
-                        onPressed: (){
-                          addToCart({'id':product.id, 'name':product['name'], 'price':product['price'], 'owner':product['owner']});
+                        onPressed: () async {
+                          await addToCart({'id':product.id, 'name':product['name'], 'price':product['price'], 'owner':product['owner']});
                         },
                         icon: Icon(Icons.add_shopping_cart),
                       ),

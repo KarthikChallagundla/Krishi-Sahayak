@@ -21,6 +21,7 @@ Future<String> signUp(String username, String email, String password, String rol
       'phone': phone,
       'address': address,
       'imageUrl': imageUrl,
+      'cartId': '',
     });
 
     return "Successfully Signed Up";
@@ -84,7 +85,6 @@ Future<String> signInWithGoogle(String role) async {
       final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
 
       if (!userDoc.exists) {
-        print(user);
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
           'uid': user.uid,
           'username': user.displayName,

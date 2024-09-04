@@ -102,7 +102,7 @@ class _AddProductsPageState extends State<AddProductsPage> {
                 onPressed: (){
                   if(formkey.currentState!.validate()){
                     formkey.currentState!.save();
-                    createProduct('products', name, description, price, widget.user);
+                    createProduct('products', name, description, price, quantity, widget.user);
                     Navigator.of(context).pop();
                   }
                 },
