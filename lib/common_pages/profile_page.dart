@@ -1,8 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_mvp/common_pages/about.dart';
 import 'package:demo_mvp/common_pages/profile_settings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:demo_mvp/locale_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -18,6 +18,31 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
+  String imgUrl = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _getUsername();
+  }
+
+  Future<void> _getUsername() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      setState(() {
+        // userId = userDoc['uid'];
+        // username = userDoc['username'];
+        // userRole = userDoc['role'];
+        // userEmail = userDoc['email'];
+        imgUrl = userDoc['imageUrl'];
+        // userDocument = userDoc;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final localeProvider = Provider.of<LocaleProvider>(context);
@@ -40,7 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
             CircleAvatar(
               backgroundColor: Colors.white,
               radius: 55,
-              child: Image.asset('assets/krishi_sahayak.png'),
+              backgroundImage: (imgUrl == '') ? AssetImage('assets/profile.jpeg') : NetworkImage(imgUrl) as ImageProvider,
             ),
             SizedBox(height: 12),
             Text(

@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileSettings extends StatefulWidget {
   const ProfileSettings({super.key});
@@ -14,6 +18,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   final _usernameController = TextEditingController();
   final _addressController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _imgUrlController = TextEditingController();
+  final _emailController = TextEditingController();
+
+  bool loading = false;
+
+  ImagePicker picker = ImagePicker();
 
   @override
   void initState() {
@@ -24,15 +34,14 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   Future<void> _loadUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
       if (userDoc.exists) {
         setState(() {
           _usernameController.text = userDoc['username'] ?? '';
           _addressController.text = userDoc['address'] ?? '';
           _phoneController.text = userDoc['phone'] ?? '';
+          _imgUrlController.text = userDoc['imageUrl'] ?? '';
+          _emailController.text = userDoc['email'] ?? '';
         });
       }
     }
@@ -46,6 +55,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           'username': _usernameController.text,
           'address': _addressController.text,
           'phone': _phoneController.text,
+          'imageUrl': _imgUrlController.text,
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Profile updated successfully!')),
@@ -67,6 +77,52 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           key: _formKey,
           child: ListView(
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 70,
+                        backgroundImage: (_imgUrlController.text == '') ? AssetImage('assets/profile.jpeg') as ImageProvider : NetworkImage(_imgUrlController.text) as ImageProvider,
+                        child: (loading) ? CircularProgressIndicator() : Container(),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: CircleAvatar(
+                          child: IconButton(
+                            onPressed: () async {
+                              print(_emailController.text);
+                              XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                              File imageFile = File(image!.path);
+                              try {
+                                setState(() {
+                                  loading = true;
+                                });
+                                String fileName = _emailController.text;
+                                Reference ref = FirebaseStorage.instance.ref().child('user_photos/$fileName.jpg');
+                          
+                                UploadTask uploadTask = ref.putFile(imageFile);
+                                await uploadTask.whenComplete(() => null);
+                          
+                                String downloadUrl = await ref.getDownloadURL();
+                                setState(() {
+                                  loading = false;
+                                  _imgUrlController.text = downloadUrl;
+                                });
+                              } catch (e) {
+                                print('Error uploading image: $e');
+                              }
+                            },
+                            icon: Icon(Icons.edit, size: 25,)
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
               TextFormField(
                 controller: _usernameController,
                 decoration: InputDecoration(labelText: 'Username'),
