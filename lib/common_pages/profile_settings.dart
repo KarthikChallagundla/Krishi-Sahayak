@@ -93,7 +93,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         child: CircleAvatar(
                           child: IconButton(
                             onPressed: () async {
-                              print(_emailController.text);
                               XFile? image = await picker.pickImage(source: ImageSource.gallery);
                               File imageFile = File(image!.path);
                               try {
