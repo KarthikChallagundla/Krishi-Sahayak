@@ -39,6 +39,7 @@ class _MyProductsPageState extends State<MyProductsPage> {
                 itemBuilder: (context, index) {
                   return (prodList[index]['owner'] != widget.user) ? Container() : Card(
                     child: ListTile(
+                      leading: SizedBox(width: 50, child: Image.network(prodList[index]['imageUrl'])),
                       title: Text("Name : ${prodList[index]['name']}"),
                       subtitle: Text("Description : ${prodList[index]['description']}\nPrice : ${prodList[index]['price']}"),
                       trailing: PopupMenuButton(

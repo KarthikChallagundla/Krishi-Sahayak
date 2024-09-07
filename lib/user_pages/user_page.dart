@@ -70,6 +70,7 @@ class _UserPageState extends State<UserPage> {
                   var product = prodList[index];
                   return Card(
                     child: ListTile(
+                      leading: SizedBox(width: 50, child: Image.network(prodList[index]['imageUrl']),),
                       title: Text("${product['name']} ${(int.parse(product['quantity']) == 0) ? "Out of stock" : ""}"),
                       subtitle: Text("${product['description']}\nPrice : ${product['price']}"),
                       trailing: IconButton(

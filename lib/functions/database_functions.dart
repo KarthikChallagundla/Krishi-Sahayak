@@ -9,7 +9,7 @@ updateUser(String collName, docName, field, var newFieldValue) async {
 
 // CRUD operations on products
 
-createProduct(String collName, name, description, price, quantity, userId) async {
+createProduct(String collName, name, description, price, quantity, userId, imgUrl) async {
   CollectionReference collectionRef = FirebaseFirestore.instance.collection('products');
   DocumentReference docRef = collectionRef.doc();
   String randomId = docRef.id;
@@ -20,6 +20,7 @@ createProduct(String collName, name, description, price, quantity, userId) async
     'price': price,
     'quantity': quantity,
     'owner': userId,
+    'imageUrl': imgUrl,
   });
 }
 
@@ -66,6 +67,7 @@ addToCart(Map<String, dynamic> item) async {
         'price': item['price'],
         'quantity': 1,
         'owner': item['owner'],
+        'imageUrl': item['itemUrl']
       });
     }
 

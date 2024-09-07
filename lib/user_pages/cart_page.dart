@@ -94,9 +94,11 @@ class _CartPageState extends State<CartPage> {
                         var itemName = cartItem['name'] ?? 'Unnamed Item';
                         var itemPrice = cartItem['price']?.toString() ?? '0';
                         var quantity = cartItem['quantity'] ?? 0;
+                        var imgUrl = cartItem['imageUrl'] ?? '';
 
                         return Card(
                           child: ListTile(
+                            leading: SizedBox(width: 50, child: Image.network(imgUrl),),
                             title: Text(itemName),
                             subtitle: Text('\$${itemPrice}'),
                             trailing: Row(

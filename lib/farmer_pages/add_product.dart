@@ -1,6 +1,10 @@
 
+import 'dart:io';
+
 import 'package:demo_mvp/functions/database_functions.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddProductsPage extends StatefulWidget {
   final String user;
@@ -17,6 +21,12 @@ class _AddProductsPageState extends State<AddProductsPage> {
   String description = "";
   String price = "";
   String quantity = "";
+  String email = "";
+  File imgFile = File('');
+
+  bool loading = false;
+
+  ImagePicker picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +40,34 @@ class _AddProductsPageState extends State<AddProductsPage> {
           key: formkey,
           child: ListView(
             children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 70,
+                        backgroundImage: (imgFile.path == '') ? AssetImage('assets/profile.jpeg') as ImageProvider : FileImage(imgFile) as ImageProvider,
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: CircleAvatar(
+                          child: IconButton(
+                            onPressed: () async {
+                              XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                              setState(() {
+                                imgFile = File(image!.path);
+                              });
+                            },
+                            icon: Icon(Icons.edit, size: 25,)
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Name'),
                 validator: (value) {
@@ -99,14 +137,31 @@ class _AddProductsPageState extends State<AddProductsPage> {
               ),
               SizedBox(height: 32.0),
               ElevatedButton(
-                onPressed: (){
+                onPressed: () async {
                   if(formkey.currentState!.validate()){
                     formkey.currentState!.save();
-                    createProduct('products', name, description, price, quantity, widget.user);
-                    Navigator.of(context).pop();
+                    try {
+                      setState(() {
+                        loading = true;
+                      });
+                      String fileName = '$name by ${widget.user}';
+                      Reference ref = FirebaseStorage.instance.ref().child('product_images/$fileName.jpg');
+                
+                      UploadTask uploadTask = ref.putFile(imgFile);
+                      await uploadTask.whenComplete(() => null);
+                
+                      String downloadUrl = await ref.getDownloadURL();
+                      setState(() {
+                        loading = false;
+                      });
+                      createProduct('products', name, description, price, quantity, widget.user, downloadUrl);
+                      Navigator.of(context).pop();
+                    } catch (e) {
+                      print('Error uploading image: $e');
+                    }
                   }
                 },
-                child: Text('Submit'),
+                child: (loading) ? CircularProgressIndicator() : Text('Submit'),
               ),
             ],
           ),
