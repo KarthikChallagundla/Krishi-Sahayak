@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_mvp/farmer_pages/crop_doctor.dart';
+import 'package:demo_mvp/farmer_pages/crops_page.dart';
 import 'package:demo_mvp/farmer_pages/machinery.dart';
 import 'package:demo_mvp/farmer_pages/market_prices.dart';
 import 'package:demo_mvp/farmer_pages/my_products.dart';
@@ -110,6 +111,17 @@ class _FarmerPageState extends State<FarmerPage> {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => CropDoctor()));
                 },
                 child: Text(AppLocalizations.of(context)!.cropDoctor, style: TextStyle(fontSize: 16),),
+              ),
+            ),
+            SizedBox(height: 10,),
+            ListTile(
+              tileColor: const Color.fromARGB(255, 241, 231, 231),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: TextButton(
+                onPressed: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => CropsPage()));
+                },
+                child: Text('Crop Details', style: TextStyle(fontSize: 16),),
               ),
             ),
             SizedBox(height: 10,),
