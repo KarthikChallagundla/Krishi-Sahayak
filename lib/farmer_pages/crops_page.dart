@@ -71,9 +71,10 @@ class CropInfo extends StatefulWidget {
 class _CropInfoState extends State<CropInfo> {
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> crop = widget.crop;
 
+    Map<String, dynamic> crop = widget.crop;
     List<String> keys = crop.keys.toList();
+    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(0, 200, 0, 0.8),
