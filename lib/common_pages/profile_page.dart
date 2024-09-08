@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_mvp/common_pages/about.dart';
 import 'package:demo_mvp/common_pages/profile_settings.dart';
+import 'package:demo_mvp/farmer_pages/my_tools.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
 
+  String userEmail = "";
   String imgUrl = "";
 
   @override
@@ -36,7 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
         // userId = userDoc['uid'];
         // username = userDoc['username'];
         // userRole = userDoc['role'];
-        // userEmail = userDoc['email'];
+        userEmail = userDoc['email'];
         imgUrl = userDoc['imageUrl'];
         // userDocument = userDoc;
       });
@@ -178,6 +180,19 @@ class _ProfilePageState extends State<ProfilePage> {
                             SizedBox(width: 16,),
                             Expanded(child: Text('My Orders', style: mainStyle,)),
                           ],
+                        ),
+                        SizedBox(height: 18,),
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyTools(user: userEmail,)));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.money_rounded, size: 28,),
+                              SizedBox(width: 16,),
+                              Expanded(child: Text('My Tools', style: mainStyle,)),
+                            ],
+                          ),
                         ),
                         SizedBox(height: 18,),
                         GestureDetector(
