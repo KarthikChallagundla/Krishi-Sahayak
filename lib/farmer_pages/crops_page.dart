@@ -1,3 +1,4 @@
+import 'package:demo_mvp/database/crop_data.dart';
 import 'package:flutter/material.dart';
 
 class CropsPage extends StatefulWidget {
@@ -9,26 +10,7 @@ class CropsPage extends StatefulWidget {
 
 class _CropsPageState extends State<CropsPage> {
 
-  List<Map<String, dynamic>> cropsList = [
-    {
-      "name":"Crop Name 1",
-      "description":"Description of crop",
-      "Sowing":"Content for Sowing",
-      "Ideal Growth Conditions":"Content for growth Conditions",
-      "Germination":"Content for germination",
-      "Fertilisation":"Content for fertilisation",
-      "Harvesting":"Content for harvesting"
-    },
-    {
-      "name":"Crop Name 2",
-      "description":"Description of crop",
-      "Sowing":"Content for Sowing",
-      "Ideal Growth Conditions":"Content for growth Conditions",
-      "Germination":"Content for germination",
-      "Fertilisation":"Content for fertilisation",
-      "Harvesting":"Content for harvesting"
-    }
-  ];
+  List<Map<String, dynamic>> cropsList = cropData;
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +30,8 @@ class _CropsPageState extends State<CropsPage> {
               },
               child: Card(
                 child: ListTile(
-                  title: Text(crop['name']),
-                  subtitle: Text(crop['description']),
+                  title: Text(crop['Name']),
+                  subtitle: Text(crop['Category']),
                 ),
               ),
             );
@@ -78,12 +60,11 @@ class _CropInfoState extends State<CropInfo> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(0, 200, 0, 0.8),
-        title: Text('${crop['name']} Details'),
+        title: Text('${crop['Name']} Details'),
       ),
       body: Container(
-        decoration: BoxDecoration(color: Colors.orange),
         child: ListView.builder(
-          itemCount: keys.length - 1,
+          itemCount: keys.length - 2,
           itemBuilder: (context, index) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,12 +74,12 @@ class _CropInfoState extends State<CropInfo> {
                   decoration: BoxDecoration(
                     color: Colors.blue
                   ),
-                  child: Text(keys[index + 1].toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center,)
+                  child: Text(keys[index + 2].toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center,)
                 ),
                 SizedBox(height: 10,),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(crop[keys[index + 1]]),
+                  child: Text(crop[keys[index + 2]]),
                 ),
                 SizedBox(height: 10,),
               ],
