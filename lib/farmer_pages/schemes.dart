@@ -120,9 +120,9 @@ class _SchemeDetailsState extends State<SchemeDetails> {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator(),);
                       } else if (snapshot.hasError) {
-                        return Text(scheme[keys[index + 1]]);
+                        return Text(scheme[keys[index + 3]]);
                       } else {
-                        return Text(snapshot.data ?? 'Translation failed');
+                        return Text(snapshot.data ?? scheme[keys[index + 3]]);
                       }
                     },
                   ),

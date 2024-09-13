@@ -1,5 +1,6 @@
 import 'package:demo_mvp/database/crop_data.dart';
 import 'package:flutter/material.dart';
+import 'package:translator/translator.dart';
 
 class CropsPage extends StatefulWidget {
   const CropsPage({super.key});
@@ -56,6 +57,7 @@ class _CropInfoState extends State<CropInfo> {
 
     Map<String, dynamic> crop = widget.crop;
     List<String> keys = crop.keys.toList();
+    Locale currentLocale = Localizations.localeOf(context);
     
     return Scaffold(
       appBar: AppBar(
@@ -79,7 +81,18 @@ class _CropInfoState extends State<CropInfo> {
                 SizedBox(height: 10,),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(crop[keys[index + 2]]),
+                  child: FutureBuilder(
+                    future: translateText(crop[keys[index + 2]], currentLocale.languageCode),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator(),);
+                      } else if (snapshot.hasError) {
+                        return Text(crop[keys[index+2]]);
+                      } else {
+                        return Text(snapshot.data ?? crop[keys[index+2]]);
+                      }
+                    },
+                  ),
                 ),
                 SizedBox(height: 10,),
               ],
@@ -89,4 +102,10 @@ class _CropInfoState extends State<CropInfo> {
       ),
     );
   }
+}
+
+Future<String> translateText(String message, String translateTo) async {
+  GoogleTranslator translator = GoogleTranslator();
+  var translation = await translator.translate(message, to: translateTo);
+  return translation.text;
 }
