@@ -291,16 +291,12 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           SizedBox(height: 10,),
                           GestureDetector(
-                            onTap: (){
-                              showRoleSelectionDialog(context);
+                            onTap: () async {
+                              await signInWithGoogle();
                             },
                             child: signInButton('assets/google.png', 'Continue with Google'),
                           ),
                           SizedBox(height: 10,),
-                          GestureDetector(
-                            onTap: (){},
-                            child: signInButton('assets/mobile.jpg', 'Continue with Mobile'),
-                          )
                         ],
                       ),
                     ),
@@ -333,74 +329,6 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       ),
-    );
-  }
-
-  void showRoleSelectionDialog(BuildContext context) {
-    String role = "";
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: Text('Choose a role'),
-              content: Row(
-                children: [
-                  Radio(
-                    value: "Farmer",
-                    groupValue: role,
-                    onChanged: (value) {
-                      setState(() {
-                        role = value!;
-                      });
-                    },
-                  ),
-                  Text('Farmer', style: TextStyle(fontSize: 20),),
-                  Radio(
-                    value: "User",
-                    groupValue: role,
-                    onChanged: (value) {
-                      setState(() {
-                        role = value!;
-                      });
-                    },
-                  ),
-                  Text('User', style: TextStyle(fontSize: 20),),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    role = ""; // Reset role
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('No', style: TextStyle(color: Colors.red),),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    Navigator.of(context).pop(); // Close dialog
-                    String message = await signInWithGoogle(role);
-                    
-                    // Display feedback
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(message),
-                        behavior: SnackBarBehavior.floating,
-                        showCloseIcon: true,
-                      ),
-                    );
-
-                    setState(() {}); // Optional: Refresh state
-                  },
-                  child: Text('Yes', style: TextStyle(color: Colors.blue),),
-                ),
-              ],
-            );
-          },
-        );
-      },
     );
   }
 }

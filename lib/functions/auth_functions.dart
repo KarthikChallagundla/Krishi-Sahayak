@@ -58,7 +58,7 @@ Future<String> signIn(String email, String password) async {
   }
 }
 
-Future<String> signInWithGoogle(String role) async {
+Future<String> signInWithGoogle() async {
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   await googleSignIn.signOut();
@@ -89,7 +89,7 @@ Future<String> signInWithGoogle(String role) async {
           'uid': user.uid,
           'username': user.displayName,
           'email': user.email,
-          'role': role,
+          'role': '',
           'imageUrl': user.photoURL,
           'phone': '',
           'address': '',

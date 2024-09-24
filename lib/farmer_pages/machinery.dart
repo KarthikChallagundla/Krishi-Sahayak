@@ -31,7 +31,7 @@ class _MachineryToolsState extends State<MachineryTools> {
                     child: Card(
                       child: Row(
                         children: [
-                          Image.asset('assets/plough.jpeg'),
+                          Image.network(product['imageUrl']),
                           SizedBox(width: 10,),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

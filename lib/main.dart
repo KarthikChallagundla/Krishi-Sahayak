@@ -3,6 +3,7 @@ import 'package:demo_mvp/farmer_pages/farmer_page.dart';
 import 'package:demo_mvp/l10n/l10n.dart';
 import 'package:demo_mvp/locale_provider.dart';
 import 'package:demo_mvp/login_page.dart';
+import 'package:demo_mvp/role_selection.dart';
 import 'package:demo_mvp/user_pages/user_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -49,10 +50,7 @@ class _MainAppState extends State<MainApp> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return FutureBuilder<DocumentSnapshot>(
-                      future: FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(snapshot.data!.uid)
-                          .get(),
+                      future: FirebaseFirestore.instance.collection('users').doc(snapshot.data!.uid).get(),
                       builder: (context, AsyncSnapshot<DocumentSnapshot> userSnapshot) {
                         if (userSnapshot.connectionState == ConnectionState.waiting) {
                           return Center(child: CircularProgressIndicator());
@@ -64,7 +62,7 @@ class _MainAppState extends State<MainApp> {
                           } else if (role == 'User') {
                             return UserPage();
                           } else {
-                            return LoginPage();
+                            return RoleSelection();
                           }
                         } else {
                           return LoginPage();

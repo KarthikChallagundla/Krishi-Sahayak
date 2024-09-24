@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demo_mvp/farmer_pages/crop_disease.dart';
 import 'package:demo_mvp/farmer_pages/crop_doctor.dart';
 import 'package:demo_mvp/farmer_pages/crops_page.dart';
 import 'package:demo_mvp/farmer_pages/machinery.dart';
@@ -125,6 +126,16 @@ class _FarmerPageState extends State<FarmerPage> {
               ),
             ),
             SizedBox(height: 10,),
+            ListTile(
+              tileColor: const Color.fromARGB(255, 241, 231, 231),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: TextButton(
+                onPressed: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => CropDisease()));
+                },
+                child: Text('Crop Disease', style: TextStyle(fontSize: 16),),
+              ),
+            ),
           ],
         ),
       ),
