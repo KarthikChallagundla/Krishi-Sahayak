@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:demo_mvp/farmer_pages/about_disease.dart';
+import 'package:demo_mvp/database/crop_disease_list.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 class CropDisease extends StatefulWidget {
   const CropDisease({super.key});
@@ -36,11 +38,29 @@ class _CropDiseaseState extends State<CropDisease> {
                     isLoading = true;
                     pickedImage = File(image.path);
                   });
-                  await Future.delayed(Duration(seconds: 1));
-                  setState(() {
-                    isLoading = false;
-                    output = 'Apple Scab Disease';
-                  });
+                  var request = http.MultipartRequest(
+                    'POST',
+                    Uri.parse('http://wavowov.pythonanywhere.com/predict'),
+                  );
+
+                  request.files.add(await http.MultipartFile.fromPath('file', image.path));
+
+                  var response = await request.send();
+
+                  if (response.statusCode == 200) {
+                    var responseData = await http.Response.fromStream(response);
+                    var jsonResponse = json.decode(responseData.body);
+                    setState(() {
+                      isLoading = false;
+                      output =
+                          "${diseases[jsonResponse['predicted_index']]}";
+                    });
+                  } else {
+                    setState(() {
+                      isLoading = false;
+                      output = "Error: ${response.statusCode}";
+                    });
+                  }
                 } else {
                   setState(() {
                     output = 'Please select an image';
@@ -58,12 +78,6 @@ class _CropDiseaseState extends State<CropDisease> {
             ),
             SizedBox(height: 15,),
             (isLoading) ? CircularProgressIndicator() : Text(output, style: TextStyle(fontSize: 16),),
-            (output != 'Apple Scab Disease') ? Container() : TextButton(
-              onPressed: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => AboutDisease()));
-              },
-              child: Text('Know more about disease'),
-            ),
           ],
         ),
       ),
