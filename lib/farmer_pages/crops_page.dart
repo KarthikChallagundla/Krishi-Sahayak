@@ -10,34 +10,94 @@ class CropsPage extends StatefulWidget {
 }
 
 class _CropsPageState extends State<CropsPage> {
-
   List<Map<String, dynamic>> cropsList = cropData;
 
   @override
   Widget build(BuildContext context) {
+    // Get the width of the screen
+    double screenWidth = MediaQuery.of(context).size.width;
+    // Set the number of columns based on screen width
+    int crossAxisCount = (screenWidth / 180).floor(); // Adjust the divisor for desired width per item
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Crops"),
+        centerTitle: true,
+        backgroundColor: Colors.green[700],
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: ListView.builder(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.green[100]!, Colors.green[300]!],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount, // Set the number of columns dynamically
+            childAspectRatio: 0.75,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+          ),
           itemCount: cropsList.length,
           itemBuilder: (context, index) {
             Map<String, dynamic> crop = cropsList[index];
             return GestureDetector(
-              onTap: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => CropInfo(crop: crop)));
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => CropInfo(crop: crop),
+                  ),
+                );
               },
               child: Card(
-                child: ListTile(
-                  title: Text(crop['Name']),
-                  subtitle: Text(crop['Category']),
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                      child: Image.asset(
+                        'assets/crop.jpg', // Ensure your crop data includes the Image URL
+                        fit: BoxFit.cover,
+                        height: 100, // Set a fixed height for images
+                        width: double.infinity, // Full width of the card
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            crop['Name'],
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            crop['Category'],
+                            style: TextStyle(color: Colors.green[600]),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
           },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add crop logic
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.green[700],
       ),
     );
   }
@@ -54,47 +114,49 @@ class CropInfo extends StatefulWidget {
 class _CropInfoState extends State<CropInfo> {
   @override
   Widget build(BuildContext context) {
-
     Map<String, dynamic> crop = widget.crop;
     List<String> keys = crop.keys.toList();
     Locale currentLocale = Localizations.localeOf(context);
-    
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(0, 200, 0, 0.8),
+        backgroundColor: Colors.green[700],
         title: Text('${crop['Name']} Details'),
+        centerTitle: true,
       ),
       body: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.green[100]!, Colors.green[300]!],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
         child: ListView.builder(
           itemCount: keys.length - 2,
           itemBuilder: (context, index) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            return ExpansionTile(
+              title: Text(
+                keys[index + 2].toUpperCase(),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
               children: [
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.blue
-                  ),
-                  child: Text(keys[index + 2].toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center,)
-                ),
-                SizedBox(height: 10,),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: FutureBuilder(
                     future: translateText(crop[keys[index + 2]], currentLocale.languageCode),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator(),);
+                        return Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
-                        return Text(crop[keys[index+2]]);
+                        return Text(crop[keys[index + 2]]);
                       } else {
-                        return Text(snapshot.data ?? crop[keys[index+2]]);
+                        return Text(snapshot.data ?? crop[keys[index + 2]], style: TextStyle(fontSize: 16));
                       }
                     },
                   ),
                 ),
-                SizedBox(height: 10,),
               ],
             );
           },
