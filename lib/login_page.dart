@@ -15,12 +15,15 @@ class _LoginPageState extends State<LoginPage> {
   bool showPassword = false;
   String email = '';
   String password = '';
-  String username = '';
   String role = '';
   int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    // Get the screen width and height
+    final screenSize = MediaQuery.of(context).size;
+    final isMobile = screenSize.width < 600; // Assuming mobile devices have a width less than 600
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
@@ -33,19 +36,22 @@ class _LoginPageState extends State<LoginPage> {
             key: _formkey,
             child: SingleChildScrollView(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : screenSize.width * 0.25), // Responsive padding
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(height: 70,),
+                    SizedBox(height: screenSize.height * 0.1), // Responsive top spacing
                     CircleAvatar(
                       child: Image.asset('assets/krishi_sahayak.png', scale: 3),
                       radius: 75,
                       backgroundColor: Colors.white,
                     ),
-                    SizedBox(height: 30,),
+                    SizedBox(height: 30),
                     Container(
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20), 
+                        color: Colors.white,
+                      ),
                       padding: EdgeInsets.all(10),
                       child: Column(
                         children: [
@@ -60,13 +66,14 @@ class _LoginPageState extends State<LoginPage> {
                               labelStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                               unselectedLabelStyle: TextStyle(fontSize: 15),
                               tabs: [
-                                Tab(text: "Create Account",),
-                                Tab(text: "Log In",)
+                                Tab(text: "Create Account"),
+                                Tab(text: "Log In"),
                               ],
                             ),
                           ),
-                          SizedBox(height: 20,),
-                          (selectedIndex == 1) ? Column(
+                          SizedBox(height: 20),
+                          (selectedIndex == 1) 
+                          ? Column(
                             children: [
                               TextFormField(
                                 key: ValueKey('email'),
@@ -84,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                                   });
                                 },
                               ),
-                              SizedBox(height: 10,),
+                              SizedBox(height: 10),
                               TextFormField(
                                 obscureText: !showPassword,
                                 key: ValueKey('password'),
@@ -92,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                                   labelText: 'Enter password',
                                   border: OutlineInputBorder(),
                                   suffixIcon: IconButton(
-                                    onPressed: (){
+                                    onPressed: () {
                                       setState(() {
                                         showPassword = !showPassword;
                                       });
@@ -113,12 +120,12 @@ class _LoginPageState extends State<LoginPage> {
                                   });
                                 },
                               ),
-                              SizedBox(height: 10,),
+                              SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   TextButton(
-                                    onPressed: (){
+                                    onPressed: () {
                                       showDialog(
                                         context: context,
                                         builder: (context) {
@@ -130,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                                             ),
                                             actions: [
                                               TextButton(
-                                                onPressed: (){
+                                                onPressed: () {
                                                   FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
                                                   Navigator.of(context).pop();
                                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -152,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 10,),
+                              SizedBox(height: 10),
                               Container(
                                 width: 180,
                                 height: 50,
@@ -178,11 +185,12 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 10,),
-                              Text('Or signin with'),
-                              SizedBox(height: 10,),
+                              SizedBox(height: 10),
+                              Text('Or sign in with'),
+                              SizedBox(height: 10),
                             ],
-                          ) : Column(
+                          ) 
+                          : Column(
                             children: [
                               TextFormField(
                                 key: ValueKey('email'),
@@ -200,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
                                   });
                                 },
                               ),
-                              SizedBox(height: 10,),
+                              SizedBox(height: 10),
                               TextFormField(
                                 obscureText: !showPassword,
                                 key: ValueKey('password'),
@@ -208,7 +216,7 @@ class _LoginPageState extends State<LoginPage> {
                                   labelText: 'Enter password',
                                   border: OutlineInputBorder(),
                                   suffixIcon: IconButton(
-                                    onPressed: (){
+                                    onPressed: () {
                                       setState(() {
                                         showPassword = !showPassword;
                                       });
@@ -229,7 +237,7 @@ class _LoginPageState extends State<LoginPage> {
                                   });
                                 },
                               ),
-                              SizedBox(height: 10,),
+                              SizedBox(height: 10),
                               Row(
                                 children: [
                                   Radio(
@@ -241,7 +249,7 @@ class _LoginPageState extends State<LoginPage> {
                                       });
                                     },
                                   ),
-                                  Text('Farmer', style: TextStyle(fontSize: 20),),
+                                  Text('Farmer', style: TextStyle(fontSize: 20)),
                                   Radio(
                                     value: "User",
                                     groupValue: role,
@@ -251,10 +259,10 @@ class _LoginPageState extends State<LoginPage> {
                                       });
                                     },
                                   ),
-                                  Text('User', style: TextStyle(fontSize: 20),),
+                                  Text('User', style: TextStyle(fontSize: 20)),
                                 ],
                               ),
-                              SizedBox(height: 10,),
+                              SizedBox(height: 10),
                               Container(
                                 width: 180,
                                 height: 50,
@@ -282,21 +290,19 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 10,),
-                              Text(
-                                'Or sign up with'
-                              ),
-                              SizedBox(height: 10,),
+                              SizedBox(height: 10),
+                              Text('Or sign up with'),
+                              SizedBox(height: 10),
                             ],
                           ),
-                          SizedBox(height: 10,),
+                          SizedBox(height: 10),
                           GestureDetector(
                             onTap: () async {
                               await signInWithGoogle();
                             },
                             child: signInButton('assets/google.png', 'Continue with Google'),
                           ),
-                          SizedBox(height: 10,),
+                          SizedBox(height: 10),
                         ],
                       ),
                     ),
@@ -313,7 +319,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget signInButton(String imgUrl, String name) {
     return SizedBox(
       height: 50,
-      width: 250,
+      width: 300,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), border: Border.all(width: 1)),
@@ -324,8 +330,8 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               child: Image.asset(imgUrl),
             ),
-            SizedBox(width: 5.0,),
-            Text(name),
+            SizedBox(width: 10),
+            Text(name, style: TextStyle(fontSize: 16)),
           ],
         ),
       ),
