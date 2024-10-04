@@ -69,7 +69,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Profile'),
+        title: Text('Edit Profile', style: TextStyle(color: Colors.white),),
+        backgroundColor: Colors.green[700], // Dark green for the app bar
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -77,93 +78,103 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           key: _formKey,
           child: ListView(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 70,
-                        backgroundImage: (_imgUrlController.text == '') ? AssetImage('assets/profile.jpeg') as ImageProvider : NetworkImage(_imgUrlController.text) as ImageProvider,
-                        child: (loading) ? CircularProgressIndicator() : Container(),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: CircleAvatar(
-                          child: IconButton(
-                            onPressed: () async {
-                              XFile? image = await picker.pickImage(source: ImageSource.gallery);
-                              File imageFile = File(image!.path);
+              Center(
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 70,
+                      backgroundImage: (_imgUrlController.text == '') 
+                          ? AssetImage('assets/profile.jpeg') as ImageProvider 
+                          : NetworkImage(_imgUrlController.text) as ImageProvider,
+                      child: (loading) 
+                          ? CircularProgressIndicator() 
+                          : Container(),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.green[600], // Button color
+                        child: IconButton(
+                          onPressed: () async {
+                            XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                            if (image != null) {
+                              File imageFile = File(image.path);
                               try {
                                 setState(() {
                                   loading = true;
                                 });
                                 String fileName = _emailController.text;
                                 Reference ref = FirebaseStorage.instance.ref().child('user_photos/$fileName.jpg');
-                          
                                 UploadTask uploadTask = ref.putFile(imageFile);
                                 await uploadTask.whenComplete(() => null);
-                          
                                 String downloadUrl = await ref.getDownloadURL();
                                 setState(() {
                                   loading = false;
                                   _imgUrlController.text = downloadUrl;
                                 });
                               } catch (e) {
+                                setState(() {
+                                  loading = false;
+                                });
                                 print('Error uploading image: $e');
                               }
-                            },
-                            icon: Icon(Icons.edit, size: 25,)
-                          ),
+                            }
+                          },
+                          icon: Icon(Icons.edit, size: 25, color: Colors.white),
                         ),
                       ),
-                    ],
-                  )
-                ],
+                    ),
+                  ],
+                ),
               ),
-              TextFormField(
-                controller: _usernameController,
-                decoration: InputDecoration(labelText: 'Username'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your username';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _addressController,
-                decoration: InputDecoration(labelText: 'Address'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your address';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _phoneController,
-                decoration: InputDecoration(labelText: 'Phone'),
-                keyboardType: TextInputType.phone,
-                // validator: (value) {
-                //   if (value == null || value.isEmpty) {
-                //     return 'Please enter your phone number';
-                //   }
-                //   if (!RegExp(r'^\d{10}$').hasMatch(value)) {
-                //     return 'Please enter a valid 10-digit phone number';
-                //   }
-                //   return null;
-                // },
-              ),
+              SizedBox(height: 20),
+              buildTextField(_usernameController, 'Username', Icons.person),
+              buildTextField(_addressController, 'Address', Icons.location_on),
+              buildTextField(_phoneController, 'Phone', Icons.phone, keyboardType: TextInputType.phone),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _updateUserProfile,
-                child: Text('Save Changes'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green[700], // Button color
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12), // Rounded corners
+                  ),
+                ),
+                child: Text('Save Changes', style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget buildTextField(TextEditingController controller, String labelText, IconData icon, {TextInputType? keyboardType}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: labelText,
+          prefixIcon: Icon(icon, color: Colors.green[600]), // Icon color
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.green[400]!, width: 1.5),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.green[700]!, width: 2),
+          ),
+        ),
+        keyboardType: keyboardType,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter your $labelText';
+          }
+          return null;
+        },
       ),
     );
   }
