@@ -65,7 +65,7 @@ class _CropsPageState extends State<CropsPage> {
                       child: Image.asset(
                         'assets/crop.jpg', // Ensure your crop data includes the Image URL
                         fit: BoxFit.cover,
-                        height: 100, // Set a fixed height for images
+                        height: 150, // Set a fixed height for images
                         width: double.infinity, // Full width of the card
                       ),
                     ),
@@ -91,13 +91,6 @@ class _CropsPageState extends State<CropsPage> {
             );
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add crop logic
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.green[700],
       ),
     );
   }
