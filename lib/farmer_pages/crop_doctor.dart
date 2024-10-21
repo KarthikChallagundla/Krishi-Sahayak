@@ -1,4 +1,6 @@
+import 'package:demo_mvp/locale_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 class CropDoctor extends StatefulWidget {
@@ -31,10 +33,11 @@ class _CropDoctorState extends State<CropDoctor> {
     });
   }
 
-  void startListening() async {
+  void startListening(String? currentLocaleId) async {
     if (speechEnabled && !isListening) {
       await speechToText.listen(
         onResult: onSpeechResult,
+        localeId: currentLocaleId,
         listenOptions: SpeechListenOptions(
           listenMode: ListenMode.dictation,
         )
@@ -56,6 +59,9 @@ class _CropDoctorState extends State<CropDoctor> {
 
   @override
   Widget build(BuildContext context) {
+
+  Locale currentLocale = Provider.of<LocaleProvider>(context).locale;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(0, 200, 0, 0.8),
@@ -83,7 +89,9 @@ class _CropDoctorState extends State<CropDoctor> {
                           borderRadius: BorderRadius.circular(50),
                         ),
                         suffixIcon: IconButton(
-                          onPressed: isListening ? stopListening : startListening,
+                          onPressed: () {
+                            isListening ? stopListening() : startListening(currentLocale.languageCode);
+                          },
                           icon: isListening ? Icon(Icons.mic_off) : Icon(Icons.mic),
                         ),
                       ),
